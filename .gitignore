@@ -36,6 +36,11 @@ hs_err_pid*
 # Stores VSCode versions used for testing VSCode extensions
 .vscode/
 .vscode-test
+*/.settings/*
+.project
+.classpath
+.factorypath
+
 
 ### IntelliJ IDEA ###
 .idea
