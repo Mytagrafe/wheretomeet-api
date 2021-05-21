@@ -1,2 +1,2 @@
-# wheretomeet
-web app for planning dinners or meetings with friends
+# wheretomeet-api
+API used by the wheretomeet app
