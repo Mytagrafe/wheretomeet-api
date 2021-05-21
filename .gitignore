@@ -50,5 +50,6 @@ hs_err_pid*
 
 ### misc ###
 .DS_*
+*.eclipse.*
 
 # End of https://www.toptal.com/developers/gitignore/api/java
