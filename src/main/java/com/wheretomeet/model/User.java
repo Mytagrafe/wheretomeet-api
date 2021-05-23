@@ -1,7 +1,5 @@
 package com.wheretomeet.model;
 
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -15,18 +13,12 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "users_table")
 public class User {  
 
-    
     @GeneratedValue(generator = "userId-generator")
     @GenericGenerator(name = "userId-generator", strategy = "com.wheretomeet.util.WhereToMeetIdGenerator")
-    @Column(name = "user_id")
     private @Id String userId;
-
-    @Column(name = "username")
     private @Id String username;
-
-    @Column(name = "password")
     private String password;
-    
+
     public User() {
         //default constructor
     }
@@ -59,5 +51,4 @@ public class User {
     public void setUserId(String id) {
         this.userId = id;
     }
-
 } 
