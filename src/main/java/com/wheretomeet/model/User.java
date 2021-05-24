@@ -18,6 +18,7 @@ public class User {
     private @Id String userId;
     private @Id String username;
     private String password;
+    private String email;
 
     public User() {
         //default constructor
@@ -26,6 +27,20 @@ public class User {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public User(String email, String username, String password) {
+        this.email = email;
+        this.username = username;
+        this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getUsername() {

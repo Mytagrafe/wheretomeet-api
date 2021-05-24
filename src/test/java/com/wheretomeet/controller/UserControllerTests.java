@@ -55,10 +55,24 @@ public class UserControllerTests {
 
         Mockito.when(userRepo.findById(new AccountId("Ayy", "1234"))).thenReturn(Optional.of(user));
  
-        mvc.perform(get("/user/{id}", "Ayy#1234"))
+        mvc.perform(get("/user/id/{id}", "Ayy#1234"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.userId", Matchers.is("1234")))
             .andExpect(jsonPath("$.username", Matchers.is("Ayy")))
+            .andExpect(jsonPath("$.password", Matchers.is("123")));
+    }
+
+    @Test
+    void testGetUserViaEmail() throws Exception { 
+        User user = new User("Ayy", "123");
+        user.setUserId("1234");
+        user.setEmail("a@email.com");
+
+        Mockito.when(userRepo.findByEmail("a@email.com")).thenReturn(Optional.of(user));
+ 
+        mvc.perform(get("/user/email/{email}", "a@email.com"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.email", Matchers.is("a@email.com")))
             .andExpect(jsonPath("$.password", Matchers.is("123")));
     }
 
@@ -86,7 +100,7 @@ public class UserControllerTests {
         String jsonUser = gson.toJson(user);
         Mockito.doNothing().when(userRepo).deleteById(new AccountId("Ayy", "1234"));
 
-        mvc.perform(delete("/user/{id}", "Ayy#1234")
+        mvc.perform(delete("/user/id/{id}", "Ayy#1234")
             .contentType(MediaType.APPLICATION_JSON)
             .content(jsonUser)
             .accept(MediaType.APPLICATION_JSON))

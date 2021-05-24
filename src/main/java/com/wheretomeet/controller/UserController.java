@@ -25,7 +25,7 @@ public class UserController {
 	@Autowired
 	private UserRepository userRepo;
 
-	@GetMapping("/user/{id}")
+	@GetMapping("/user/id/{id}")
 	public ResponseEntity<?> getUserDetails(@PathVariable("id") String accountId) {
 		log.debug("id: {}", accountId);
 		String[] s = accountId.split("#");
@@ -39,6 +39,16 @@ public class UserController {
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
+	@GetMapping("/user/email/{email}")
+	public ResponseEntity<?> getUserViaEmail(@PathVariable("email") String email) {
+		Optional<User>  user = userRepo.findByEmail(email);
+		if(user.isPresent()) {
+			return ResponseEntity.ok().body(user.get());
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+
+
 	@GetMapping("/users")
 	public Iterable<User> getAllUserDetails() {
 		return userRepo.findAll();
@@ -50,7 +60,7 @@ public class UserController {
 		return new ResponseEntity<String>("User created", HttpStatus.OK);
 	}
 
-	@DeleteMapping("/user/{id}")
+	@DeleteMapping("/user/id/{id}")
 	public ResponseEntity<String> deleteUser(@PathVariable("id") String accountId) {
 		String[] s = accountId.split("#");
 		userRepo.deleteById(new AccountId(s[0], s[1]));
