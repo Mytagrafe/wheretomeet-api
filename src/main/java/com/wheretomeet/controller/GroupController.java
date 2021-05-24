@@ -25,7 +25,7 @@ public class GroupController {
 	@Autowired
 	private GroupRepository groupRepo;
 
-	@GetMapping("/group/{id}")
+	@GetMapping("/group/id/{id}")
 	public ResponseEntity<?> getGroupDetails(@PathVariable("id") String id) {
 		Optional<Group> group = groupRepo.findById(id);
 		if(group.isPresent()) {
@@ -45,10 +45,9 @@ public class GroupController {
 		return new ResponseEntity<>("Group created", HttpStatus.OK);
 	}
 
-	@DeleteMapping("/group/{id}")
+	@DeleteMapping("/group/id/{id}")
 	public ResponseEntity<String> deleteGroup(@PathVariable("id") String id) {
 		groupRepo.deleteById(id);
 		return new ResponseEntity<String>("Group deleted", HttpStatus.OK);
 	}
-
 }

@@ -68,7 +68,7 @@ public class GroupControllerTests {
 
         Mockito.when(groupRepo.findById("000000001")).thenReturn(Optional.of(group));
         
-        mvc.perform(get("/group/{id}", "000000001"))
+        mvc.perform(get("/group/id/{id}", "000000001"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.groupName", Matchers.is("g1")))
             .andExpect(jsonPath("$.groupId", Matchers.is("000000001")));
@@ -108,7 +108,7 @@ public class GroupControllerTests {
         String jsonGroup = gson.toJson(group);
         Mockito.doNothing().when(groupRepo).deleteById("000000001");
 
-        mvc.perform(delete("/group/{id}", "000000001")
+        mvc.perform(delete("/group/id/{id}", "000000001")
             .contentType(MediaType.APPLICATION_JSON)
             .content(jsonGroup)
             .accept(MediaType.APPLICATION_JSON))
