@@ -7,7 +7,8 @@ import java.util.Optional;
 import com.wheretomeet.model.AccountId;
 import com.wheretomeet.model.User;
 import com.wheretomeet.repository.UserRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;  
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -81,8 +82,8 @@ public class UserControllerTests {
     void testDeleteUser() throws Exception {
         User user = new User("Ayy", "123");
         user.setUserId("1234");
-        ObjectMapper mapper = new ObjectMapper();
-        String jsonUser = mapper.writeValueAsString(user);
+        Gson gson = new Gson();
+        String jsonUser = gson.toJson(user);
         Mockito.doNothing().when(userRepo).deleteById(new AccountId("Ayy", "1234"));
 
         mvc.perform(delete("/user/{id}", "Ayy#1234")
@@ -92,7 +93,4 @@ public class UserControllerTests {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", Matchers.is("User deleted")));
     }
-
-
-
 }

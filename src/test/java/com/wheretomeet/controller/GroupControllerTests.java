@@ -8,6 +8,7 @@ import com.wheretomeet.model.Group;
 import com.wheretomeet.model.User;
 import com.wheretomeet.repository.GroupRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -103,8 +104,8 @@ public class GroupControllerTests {
         Group group = new Group("g1", "123", user1, user2, user3);
         group.setGroupId("000000001");
 
-        ObjectMapper mapper = new ObjectMapper();
-        String jsonGroup = mapper.writeValueAsString(group);
+        Gson gson = new Gson();
+        String jsonGroup = gson.toJson(group);
         Mockito.doNothing().when(groupRepo).deleteById("000000001");
 
         mvc.perform(delete("/group/{id}", "000000001")
