@@ -103,6 +103,7 @@ public class GroupControllerTests {
 
         Group group = new Group("g1", "123", user1, user2, user3);
         group.setGroupId("000000001");
+        group.setGroupOwner(user1);
 
         Gson gson = new Gson();
         String jsonGroup = gson.toJson(group);
