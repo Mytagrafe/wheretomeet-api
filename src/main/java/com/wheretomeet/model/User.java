@@ -1,22 +1,22 @@
 package com.wheretomeet.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@IdClass(AccountId.class)
 @Table(name = "users_table")
-public class User {  
+public class User implements Serializable { 
 
     @GeneratedValue(generator = "userId-generator")
     @GenericGenerator(name = "userId-generator", strategy = "com.wheretomeet.util.WhereToMeetIdGenerator")
     private @Id String userId;
-    private @Id String username;
+    private String username;
     private String password;
     private String email;
 

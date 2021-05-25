@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import com.wheretomeet.model.AccountId;
 import com.wheretomeet.model.User;
 import com.wheretomeet.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -51,13 +50,13 @@ public class UserControllerTests {
     @Test
     void testGetOneUser() throws Exception { 
         User user = new User("Ayy", "123");
-        user.setUserId("1234");
+        user.setUserId("Ayy#1234");
 
-        Mockito.when(userRepo.findById(new AccountId("Ayy", "1234"))).thenReturn(Optional.of(user));
+        Mockito.when(userRepo.findById("Ayy#1234")).thenReturn(Optional.of(user));
  
         mvc.perform(get("/user/id/{id}", "Ayy#1234"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.userId", Matchers.is("1234")))
+            .andExpect(jsonPath("$.userId", Matchers.is("Ayy#1234")))
             .andExpect(jsonPath("$.username", Matchers.is("Ayy")))
             .andExpect(jsonPath("$.password", Matchers.is("123")));
     }
@@ -65,7 +64,7 @@ public class UserControllerTests {
     @Test
     void testGetUserViaEmail() throws Exception { 
         User user = new User("Ayy", "123");
-        user.setUserId("1234");
+        user.setUserId("Ayy#1234");
         user.setEmail("a@email.com");
 
         Mockito.when(userRepo.findByEmail("a@email.com")).thenReturn(Optional.of(user));
@@ -79,7 +78,7 @@ public class UserControllerTests {
     @Test
     void testCreateUser() throws Exception {
         User user = new User("Ayy", "123");
-        user.setUserId("1234");
+        user.setUserId("Ayy#1234");
         ObjectMapper mapper = new ObjectMapper();
         String jsonUser = mapper.writeValueAsString(user);
         Mockito.when(userRepo.save(user)).thenReturn(user);
@@ -95,10 +94,10 @@ public class UserControllerTests {
     @Test
     void testDeleteUser() throws Exception {
         User user = new User("Ayy", "123");
-        user.setUserId("1234");
+        user.setUserId("Ayy#1234");
         Gson gson = new Gson();
         String jsonUser = gson.toJson(user);
-        Mockito.doNothing().when(userRepo).deleteById(new AccountId("Ayy", "1234"));
+        Mockito.doNothing().when(userRepo).deleteById("Ayy#1234");
 
         mvc.perform(delete("/user/id/{id}", "Ayy#1234")
             .contentType(MediaType.APPLICATION_JSON)

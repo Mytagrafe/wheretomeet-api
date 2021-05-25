@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Random;
 
 import com.wheretomeet.model.Group;
+import com.wheretomeet.model.User;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
@@ -33,11 +34,17 @@ public class WhereToMeetIdGenerator implements IdentifierGenerator{
             maxVal = GROUP_ID_MAX_VALUE;
             maxLen = GROUP_ID_MAX_LENGTH;
         }
-            
+
         String generatedTag = Integer.toString(1 + rand.nextInt(maxVal-1));
         while(generatedTag.length() != maxLen) {
             generatedTag = '0' + generatedTag;
         }
+
+        //appends username to tag
+        if(entity_type == User.class) { 
+            generatedTag = ((User)o).getUsername() + "#" + generatedTag;
+        }
+
         return generatedTag;
     }
     
