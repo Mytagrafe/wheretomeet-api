@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.wheretomeet.model.User;
+import com.wheretomeet.repository.FriendsListRepository;
 import com.wheretomeet.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -29,6 +30,9 @@ public class UserControllerTests {
     
     @Autowired
     private MockMvc mvc;
+
+    @MockBean
+    FriendsListRepository friendsRepo;
 
     @MockBean
     UserRepository userRepo;
@@ -81,6 +85,7 @@ public class UserControllerTests {
         user.setUserId("Ayy#1234");
         ObjectMapper mapper = new ObjectMapper();
         String jsonUser = mapper.writeValueAsString(user);
+
         Mockito.when(userRepo.save(user)).thenReturn(user);
 
         mvc.perform(post("/users")
@@ -88,7 +93,7 @@ public class UserControllerTests {
             .content(jsonUser)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$", Matchers.is("User created")));
+            .andExpect(jsonPath("$", Matchers.is("User Ayy#1234 created")));
     }
 
     @Test
@@ -104,6 +109,6 @@ public class UserControllerTests {
             .content(jsonUser)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$", Matchers.is("User deleted")));
+            .andExpect(jsonPath("$", Matchers.is("User Ayy#1234 deleted")));
     }
 }

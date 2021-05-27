@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.wheretomeet.model.FriendsList;
 import com.wheretomeet.model.User;
+import com.wheretomeet.repository.FriendsListRepository;
 import com.wheretomeet.repository.UserRepository;
 
 @RestController
@@ -20,6 +22,9 @@ public class UserController {
 
 	@Autowired
 	private UserRepository userRepo;
+
+	@Autowired
+	private FriendsListRepository friendsRepo;
 
 	@GetMapping("/user/id/{id}")
 	public ResponseEntity<?> getUserDetails(@PathVariable("id") String accountId) {
@@ -47,12 +52,14 @@ public class UserController {
 	@PostMapping("/users")
 	public ResponseEntity<String> createUser(@RequestBody User user) {
 		userRepo.save(user);
-		return new ResponseEntity<String>("User created", HttpStatus.OK);
+		String generatedId = user.getUserId();
+		friendsRepo.save(new FriendsList(generatedId));
+		return new ResponseEntity<String>("User " + generatedId + " created", HttpStatus.OK);
 	}
 
 	@DeleteMapping("/user/id/{id}")
 	public ResponseEntity<String> deleteUser(@PathVariable("id") String accountId) {
 		userRepo.deleteById(accountId);
-		return new ResponseEntity<String>("User deleted", HttpStatus.OK);
+		return new ResponseEntity<String>("User " + accountId + " deleted", HttpStatus.OK);
 	}
 }
