@@ -1,9 +1,8 @@
 package com.wheretomeet.controller;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
+import com.wheretomeet.model.Group;
 import com.wheretomeet.model.User;
 import com.wheretomeet.repository.FriendsListRepository;
 import com.wheretomeet.repository.UserRepository;
@@ -36,20 +35,6 @@ public class UserControllerTests {
 
     @MockBean
     UserRepository userRepo;
-
-    @Test
-    void testGetAllUsers() throws Exception { 
-        User user1 = new User("Ayy", "123");
-        User user2 = new User("Bee", "123");
-        User user3 = new User("Cee", "123");
-        List<User> users = Arrays.asList(user1, user2, user3);
- 
-        Mockito.when(userRepo.findAll()).thenReturn(users);
- 
-        mvc.perform(get("/users"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", Matchers.hasSize(3)));
-    }
 
     @Test
     void testGetOneUser() throws Exception { 
@@ -111,4 +96,27 @@ public class UserControllerTests {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", Matchers.is("User Ayy#1234 deleted")));
     }
+
+    @Test
+    void testGetUsersGroups() throws Exception {
+        User user = new User("Ayy", "123");
+        user.setUserId("Ayy#1234");
+
+        Group g1 = new Group("g1", "123", user);
+        Group g2 = new Group("g2", "123", user);
+        Group g3 = new Group("g3", "123", user);
+
+        user.addGroup(g1);
+        user.addGroup(g2);
+        user.addGroup(g3);
+
+        Mockito.when(userRepo.findById("Ayy#1234")).thenReturn(Optional.of(user));
+
+        mvc.perform(get("/user/{id}/groups", "Ayy#1234"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", Matchers.hasSize(3)));
+    }
+
+
+
 }

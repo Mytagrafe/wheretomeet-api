@@ -35,7 +35,6 @@ public class FriendsListController {
     
     @PutMapping("/friends/{userId}/add/{friendId}")
     public ResponseEntity<?> addFriendToList(@PathVariable("userId") String userId, @PathVariable("friendId") String friendId) {
-
         FriendsList friendsList = friendsRepo.findById(userId).orElse(null);
         if(friendsList != null) {
             User friend = userRepo.findById(friendId).orElse(null);
@@ -51,7 +50,6 @@ public class FriendsListController {
 
     @PutMapping("/friends/{userId}/remove/{friendId}")
     public ResponseEntity<?> removeFriendFromList(@PathVariable("userId") String userId, @PathVariable("friendId") String friendId) {
-
         FriendsList friendsList = friendsRepo.findById(userId).orElse(null);
 
         if(friendsList != null) {

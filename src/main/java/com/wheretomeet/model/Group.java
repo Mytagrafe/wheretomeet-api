@@ -23,6 +23,7 @@ public class Group implements Serializable {
     @JoinColumn(name = "group_owner", referencedColumnName = "userId")
     private @OneToOne User groupOwner;
     private ArrayList<User> groupMembers;
+    private ArrayList<Venue> venues;
 
     public Group() {
         //default constructor
@@ -77,5 +78,17 @@ public class Group implements Serializable {
 
     public void setGroupId(String id) {
         this.groupId = id;
+    }
+
+    public ArrayList<Venue> getGroupVenues(){
+        return venues;
+    }
+
+    public void addGroupVenue(Venue venue) {
+        this.venues.add(venue);
+    }
+
+    public void removeGroupVenue(Venue venue) {
+        this.venues.remove(venue);
     }
 }

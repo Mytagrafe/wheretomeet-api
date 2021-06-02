@@ -1,7 +1,6 @@
 package com.wheretomeet.controller;
 
 import java.util.Optional;
-import java.lang.Iterable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,11 +43,6 @@ public class UserController {
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
-	@GetMapping("/users")
-	public Iterable<User> getAllUserDetails() {
-		return userRepo.findAll();
-	}
-
 	@PostMapping("/users")
 	public ResponseEntity<String> createUser(@RequestBody User user) {
 		userRepo.save(user);
@@ -62,4 +56,14 @@ public class UserController {
 		userRepo.deleteById(accountId);
 		return new ResponseEntity<String>("User " + accountId + " deleted", HttpStatus.OK);
 	}
+
+	@GetMapping("/user/{id}/groups")
+	public ResponseEntity<?> getAllUsersGroups(@PathVariable("id") String userId) {
+		User user = userRepo.findById(userId).orElse(null);
+		if(user != null) {
+			return ResponseEntity.ok().body(user.getGroups());
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+
 }

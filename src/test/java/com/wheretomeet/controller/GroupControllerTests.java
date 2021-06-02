@@ -35,29 +35,6 @@ public class GroupControllerTests {
     GroupRepository groupRepo;
 
     @Test
-    void testGetAllGroups() throws Exception { 
-
-        User user1 = new User("Ayy", "123");
-        User user2 = new User("Bee", "123");
-        User user3 = new User("Cee", "123");
-
-        Group group1 = new Group("g1", "123", user1);
-        Group group2 = new Group("g2", "123", user1, user2);
-        Group group3 = new Group("g3", "123", user1, user2, user3);
-
-        List<Group> groups = Arrays.asList(group1, group2, group3);
-
-        Mockito.when(groupRepo.findAll()).thenReturn(groups);
-
-        mvc.perform(get("/groups"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", Matchers.hasSize(3)))
-            .andExpect(jsonPath("$[0].groupName", Matchers.is("g1")))
-            .andExpect(jsonPath("$[1].groupName", Matchers.is("g2")))
-            .andExpect(jsonPath("$[2].groupName", Matchers.is("g3")));
-    }
-
-    @Test
     void testGetOneGroup() throws Exception { 
         User user1 = new User("Ayy", "123");
         User user2 = new User("Bee", "123");
