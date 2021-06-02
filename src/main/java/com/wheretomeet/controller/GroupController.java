@@ -3,6 +3,7 @@ package com.wheretomeet.controller;
 import java.util.Optional;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,7 +44,7 @@ public class GroupController {
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
-	@PostMapping("/group/{id}/add/location") 
+	@PutMapping("/group/{id}/add/location") 
 	public ResponseEntity<?> addVenueToGroup(@PathVariable("id") String id, @RequestBody Venue venue) {
 		Group g = groupRepo.findById(id).orElse(null);
 		if(g != null) {
@@ -53,8 +54,8 @@ public class GroupController {
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
-	@PostMapping("/group/{id}/remove/location") 
-	public ResponseEntity<?> removeVenueToGroup(@PathVariable("id") String id, @RequestBody Venue venue) {
+	@PutMapping("/group/{id}/remove/location") 
+	public ResponseEntity<?> removeVenueFromGroup(@PathVariable("id") String id, @RequestBody Venue venue) {
 		Group g = groupRepo.findById(id).orElse(null);
 		if(g != null) {
 			g.removeGroupVenue(venue);
