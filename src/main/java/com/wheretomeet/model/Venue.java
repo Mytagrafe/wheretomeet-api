@@ -104,4 +104,15 @@ public class Venue {
         }
         return null;
     }
+
+    @Override
+    public boolean equals(Object obj){
+
+        if(obj == null || getClass() != obj.getClass())
+            return false;
+
+        Venue other = (Venue) obj;
+
+        return this.venueId.equals( other.getVenueId() );
+    }
 }

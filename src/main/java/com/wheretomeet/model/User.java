@@ -2,6 +2,7 @@ package com.wheretomeet.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,7 +24,7 @@ public class User implements Serializable {
     private String password;
     private String email;
     @JsonBackReference
-    private ArrayList<Group> groups;
+    private HashSet<Group> groups;
 
     public User() {
         //default constructor
@@ -32,14 +33,14 @@ public class User implements Serializable {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
-        this.groups = new ArrayList<Group>();
+        this.groups = new HashSet<Group>();
     }
 
     public User(String email, String username, String password) {
         this.email = email;
         this.username = username;
         this.password = password;
-        this.groups = new ArrayList<Group>();
+        this.groups = new HashSet<Group>();
     }
 
     public String getEmail() {
@@ -74,7 +75,7 @@ public class User implements Serializable {
         this.userId = id;
     }
 
-    public ArrayList<Group> getGroups() {
+    public HashSet<Group> getGroups() {
         return groups;
     }
 
@@ -84,5 +85,16 @@ public class User implements Serializable {
 
     public void removeGroup(Group group) {
         groups.remove(group);
+    }
+
+    @Override
+    public boolean equals(Object obj){
+
+        if(obj == null || getClass() != obj.getClass())
+            return false;
+
+        User other = (User) obj;
+
+        return this.userId.equals( other.getUserId() );
     }
 } 
