@@ -1,31 +1,31 @@
 package com.wheretomeet.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
+import com.wheretomeet.model.DistanceDuration.TravelMethod;
+
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.javatuples.Pair;
 
-public class Venue {
+public class Venue implements Serializable{
+    final static Logger log = LoggerFactory.getLogger(Venue.class);
 
-    enum TravelMethod {
-        DRIVING, 
-        WALKING
-    }
-
-    private float latitude;
-    private float longitude;
+    private float[] venueCoordinates = new float[2];
     private String venueName;
     private String venueAddress;
     private String venuePhoneNumber;
     private String venueId;
-    private HashMap<String, Pair<String, String>[]> distanceDuration;
+    private HashMap<String, DistanceDuration> distanceDuration;
 
     public Venue() {
         //default constructor
     }
 
-    public Venue(long lat, long lng, String name, String address, String phoneNumber, String venueId) {
-        this.latitude = lat;
-        this.longitude = lng;
+    public Venue(float lat, float lng, String name, String address, String phoneNumber, String venueId) {
+        this.venueCoordinates[0] = lat;
+        this.venueCoordinates[1] = lng;
         this.venueName = name;
         this.venueAddress = address;
         this.venuePhoneNumber = phoneNumber;
@@ -34,12 +34,12 @@ public class Venue {
     }
 
     public void setVenueCoordinates(float lat, float lng) {
-        this.latitude = lat;
-        this.longitude = lng;
+        this.venueCoordinates[0] = lat;
+        this.venueCoordinates[1] = lng;
     }
 
     public float[] getVenueCoordinates() {
-        return new float[] {latitude, longitude};
+        return venueCoordinates;
     }
 
     public void setVenueName(String name) {
@@ -74,34 +74,17 @@ public class Venue {
         this.venueId = venueId;
     }
 
-    public void storeUserDistanceDurationToVenue(String uid, Pair<String, String> pair, TravelMethod method) {
-        try {
-            if(method == TravelMethod.DRIVING) {
-                distanceDuration.get(uid)[0] = pair;
-            }
-
-            else if(method == TravelMethod.WALKING) {
-                distanceDuration.get(uid)[1] = pair;
-            }
-        }
-        catch(NullPointerException e) {
-            //do nothing for now...
+    public void initUserDistanceDuration() {
+        if(this.distanceDuration == null) {
+            this.distanceDuration = new HashMap<>();
         }
     }
 
-    public Pair<String, String> getUserDistanceDurationToVenue(String uid, TravelMethod method) {
-        try {
-            if(method == TravelMethod.DRIVING) {
-                return distanceDuration.get(uid)[0];
-            }
+    public void storeUserDistanceDurationToVenue(String uid, DistanceDuration distanceDuration) {
+        this.distanceDuration.put(uid, distanceDuration);
+    }
 
-            else if(method == TravelMethod.WALKING) {
-                return distanceDuration.get(uid)[1];
-            }
-        }
-        catch(NullPointerException e) {
-            //do nothing for now...
-        }
-        return null;
+    public Pair<String, String> getUserDistanceDurationToVenue(String uid, TravelMethod method) {
+        return this.distanceDuration.get(uid).getDistanceDuration(method);
     }
 }

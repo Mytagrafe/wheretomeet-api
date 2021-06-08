@@ -36,8 +36,9 @@ public class FriendsList implements Serializable {
         friends.add(friend);
     }
 
-    public void removeFriend(User friend) {
-        friends.remove(friend);
+    public boolean removeFriend(User friend) {
+        boolean b = friends.remove(friend);
+        return b;
     }
 
     public ArrayList<User> getFriends() {

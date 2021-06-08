@@ -85,4 +85,12 @@ public class User implements Serializable {
     public void removeGroup(Group group) {
         groups.remove(group);
     }
+
+    public boolean equals(Object o) {
+        if (!(o instanceof User)) {
+          return false;
+        }
+        User other = (User) o;
+        return userId.equals(other.userId);
+    }
 } 

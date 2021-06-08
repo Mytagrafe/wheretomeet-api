@@ -16,8 +16,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+
 @RestController
 public class FriendsListController {
+
+    final static Logger log = LoggerFactory.getLogger(FriendsListController.class);
+
     @Autowired
     FriendsListRepository friendsRepo;
 
@@ -55,7 +61,8 @@ public class FriendsListController {
         if(friendsList != null) {
             User friend = userRepo.findById(friendId).orElse(null);
             if(friend != null) {
-                friendsList.removeFriend(friend);
+                boolean b = friendsList.removeFriend(friend);
+                log.info("{}", b);
                 friendsRepo.save(friendsList);
                 return new ResponseEntity<>(friendsList, HttpStatus.OK);
             }

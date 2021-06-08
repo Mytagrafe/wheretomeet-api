@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.slf4j.LoggerFactory;
+import org.javatuples.Pair;
 import org.slf4j.Logger;
 
+import com.wheretomeet.model.DistanceDuration;
 import com.wheretomeet.model.Group;
 import com.wheretomeet.model.Venue;
 import com.wheretomeet.repository.GroupRepository;
@@ -36,7 +38,7 @@ public class GroupController {
 	}
 
 	@GetMapping("/group/{id}/locations")
-	public ResponseEntity<?> getGroupVenues(@PathVariable("id") String id, @RequestBody Venue venue) {
+	public ResponseEntity<?> getGroupVenues(@PathVariable("id") String id) {
 		Group g = groupRepo.findById(id).orElse(null);
 		if(g != null) {
 			return ResponseEntity.ok().body(g.getGroupVenues());
@@ -47,9 +49,11 @@ public class GroupController {
 	@PutMapping("/group/{id}/add/location") 
 	public ResponseEntity<?> addVenueToGroup(@PathVariable("id") String id, @RequestBody Venue venue) {
 		Group g = groupRepo.findById(id).orElse(null);
-		if(g != null) {
-			g.addGroupVenue(venue);
-			return new ResponseEntity<String>("Venue location added successfully!",HttpStatus.OK);
+		if(g != null && g.getGroupVenues() != null) {
+			venue.initUserDistanceDuration();
+			g.addGroupVenue(venue.getVenueId(), venue);
+			groupRepo.save(g);
+			return new ResponseEntity<String>("Venue location added successfully!", HttpStatus.OK);
 		}
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
@@ -58,14 +62,32 @@ public class GroupController {
 	public ResponseEntity<?> removeVenueFromGroup(@PathVariable("id") String id, @RequestBody Venue venue) {
 		Group g = groupRepo.findById(id).orElse(null);
 		if(g != null) {
-			g.removeGroupVenue(venue);
+			g.removeGroupVenue(venue.getVenueId());
 			return new ResponseEntity<String>("Venue location removed successfully!",HttpStatus.OK);
 		}
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
+	@PutMapping("group/{id}/distanceDuration/{userId}")
+	public ResponseEntity<?> addUserDistanceDurationToVenue(@PathVariable("id") String groupId, @RequestBody DistanceDuration distanceDuration) {
+
+		Group g = groupRepo.findById(groupId).orElse(null);
+
+		if(g != null) {
+			String venueId = distanceDuration.getPlaceId();
+			Venue venue = g.getGroupVenues().get(venueId);
+			if(venue != null) {
+				venue.storeUserDistanceDurationToVenue(distanceDuration.getUserId(), distanceDuration);
+				return ResponseEntity.ok().body("added user's distance to place");
+			}
+		}
+
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+
 	@PostMapping("/groups")
 	public ResponseEntity<String> createGroup(@RequestBody Group group) {
+		group.initGroupVenues();
 		groupRepo.save(group);
 		return new ResponseEntity<>("Group created", HttpStatus.OK);
 	}

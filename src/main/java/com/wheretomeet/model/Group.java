@@ -2,6 +2,8 @@ package com.wheretomeet.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -23,7 +25,7 @@ public class Group implements Serializable {
     @JoinColumn(name = "group_owner", referencedColumnName = "userId")
     private @OneToOne User groupOwner;
     private ArrayList<User> groupMembers;
-    private ArrayList<Venue> venues;
+    private HashMap<String, Venue> venues;
 
     public Group() {
         //default constructor
@@ -80,15 +82,21 @@ public class Group implements Serializable {
         this.groupId = id;
     }
 
-    public ArrayList<Venue> getGroupVenues(){
+    public HashMap<String, Venue> getGroupVenues(){
         return venues;
     }
 
-    public void addGroupVenue(Venue venue) {
-        this.venues.add(venue);
+    public void initGroupVenues() {
+        if(this.venues == null) {
+            this.venues = new HashMap<>();
+        }
     }
 
-    public void removeGroupVenue(Venue venue) {
-        this.venues.remove(venue);
+    public void addGroupVenue(String venueId, Venue venue) {
+        this.venues.put(venueId, venue);
+    }
+
+    public void removeGroupVenue(String venueId) {
+        this.venues.remove(venueId);
     }
 }
