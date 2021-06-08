@@ -87,4 +87,15 @@ public class Venue implements Serializable{
     public Pair<String, String> getUserDistanceDurationToVenue(String uid, TravelMethod method) {
         return this.distanceDuration.get(uid).getDistanceDuration(method);
     }
+
+    @Override
+    public boolean equals(Object obj){
+
+        if(obj == null || getClass() != obj.getClass())
+            return false;
+
+        Venue other = (Venue) obj;
+
+        return this.venueId.equals( other.getVenueId() );
+    }
 }

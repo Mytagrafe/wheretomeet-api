@@ -2,6 +2,7 @@ package com.wheretomeet.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -14,7 +15,7 @@ import javax.persistence.Table;
 public class FriendsList implements Serializable {
     @Id
     private String userId;
-    private ArrayList<User> friends;
+    private HashSet<User> friends;
     @OneToOne
     @PrimaryKeyJoinColumn(name = "userId", referencedColumnName = "userId")
     private User user;
@@ -25,7 +26,7 @@ public class FriendsList implements Serializable {
 
     public FriendsList(String userId) {
         this.userId = userId;
-        this.friends = new ArrayList<User>();
+        this.friends = new HashSet<User>();
     }
 
     public String getFriendsListOwner() {
@@ -41,7 +42,7 @@ public class FriendsList implements Serializable {
         return b;
     }
 
-    public ArrayList<User> getFriends() {
+    public HashSet<User> getFriends() {
         return friends;
     }
 }
