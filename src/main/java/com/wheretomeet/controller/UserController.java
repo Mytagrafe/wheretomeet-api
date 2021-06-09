@@ -12,18 +12,28 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.wheretomeet.model.FriendsList;
+import com.wheretomeet.model.GroupsList;
 import com.wheretomeet.model.User;
 import com.wheretomeet.repository.FriendsListRepository;
+import com.wheretomeet.repository.GroupsListRepository;
 import com.wheretomeet.repository.UserRepository;
+
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 @RestController
 public class UserController {
+
+	final static Logger log = LoggerFactory.getLogger(UserController.class);
 
 	@Autowired
 	private UserRepository userRepo;
 
 	@Autowired
 	private FriendsListRepository friendsRepo;
+
+	@Autowired
+    private GroupsListRepository groupsListRepo;
 
 	@GetMapping("/user/id/{id}")
 	public ResponseEntity<?> getUserDetails(@PathVariable("id") String accountId) {
@@ -47,23 +57,17 @@ public class UserController {
 	public ResponseEntity<String> createUser(@RequestBody User user) {
 		userRepo.save(user);
 		String generatedId = user.getUserId();
+		// initialize and store user's data lists
 		friendsRepo.save(new FriendsList(generatedId));
+		groupsListRepo.save(new GroupsList(generatedId));
 		return new ResponseEntity<String>("User " + generatedId + " created", HttpStatus.OK);
 	}
 
 	@DeleteMapping("/user/id/{id}")
 	public ResponseEntity<String> deleteUser(@PathVariable("id") String accountId) {
 		userRepo.deleteById(accountId);
+		friendsRepo.deleteById(accountId);
+		groupsListRepo.deleteById(accountId);
 		return new ResponseEntity<String>("User " + accountId + " deleted", HttpStatus.OK);
 	}
-
-	@GetMapping("/user/{id}/groups")
-	public ResponseEntity<?> getAllUsersGroups(@PathVariable("id") String userId) {
-		User user = userRepo.findById(userId).orElse(null);
-		if(user != null) {
-			return ResponseEntity.ok().body(user.getGroups());
-		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	}
-
 }

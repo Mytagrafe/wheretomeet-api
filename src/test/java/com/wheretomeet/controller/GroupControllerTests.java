@@ -1,13 +1,10 @@
 package com.wheretomeet.controller;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import com.wheretomeet.model.Group;
 import com.wheretomeet.model.User;
 import com.wheretomeet.repository.GroupRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import org.hamcrest.Matchers;
@@ -58,18 +55,19 @@ public class GroupControllerTests {
         User user3 = new User("Cee", "123");
 
         Group group = new Group("g1", "123", user1, user2, user3);
+        group.setGroupOwner(user1);
         group.setGroupId("000000001");
 
-        ObjectMapper mapper = new ObjectMapper();
-        String jsonGroup = mapper.writeValueAsString(group);
+        Gson gson = new Gson();
+        String jsonGroup = gson.toJson(group);
+
         Mockito.when(groupRepo.save(group)).thenReturn(group);
 
         mvc.perform(post("/groups")
             .contentType(MediaType.APPLICATION_JSON)
             .content(jsonGroup)
             .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", Matchers.is("Group created")));
+            .andExpect(status().isOk());
     }
 
     @Test
@@ -90,7 +88,6 @@ public class GroupControllerTests {
             .contentType(MediaType.APPLICATION_JSON)
             .content(jsonGroup)
             .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", Matchers.is("Group deleted")));
+            .andExpect(status().isOk());
     }
 }

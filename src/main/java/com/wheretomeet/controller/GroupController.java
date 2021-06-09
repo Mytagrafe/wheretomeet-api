@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.slf4j.LoggerFactory;
-import org.javatuples.Pair;
 import org.slf4j.Logger;
 
 import com.wheretomeet.model.DistanceDuration;
@@ -35,6 +34,22 @@ public class GroupController {
 			return ResponseEntity.ok().body(group.get());
 		}
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+
+	@PostMapping("/groups")
+	public ResponseEntity<?> createGroup(@RequestBody Group group) {
+		if(group != null) {
+			group.initGroupVenues();
+			groupRepo.save(group);
+			return new ResponseEntity<Group>(group, HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+
+	@DeleteMapping("/group/id/{id}")
+	public ResponseEntity<String> deleteGroup(@PathVariable("id") String id) {
+		groupRepo.deleteById(id);
+		return new ResponseEntity<String>("Group deleted", HttpStatus.OK);
 	}
 
 	@GetMapping("/group/{id}/locations")
@@ -83,18 +98,5 @@ public class GroupController {
 		}
 
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	}
-
-	@PostMapping("/groups")
-	public ResponseEntity<String> createGroup(@RequestBody Group group) {
-		group.initGroupVenues();
-		groupRepo.save(group);
-		return new ResponseEntity<>("Group created", HttpStatus.OK);
-	}
-
-	@DeleteMapping("/group/id/{id}")
-	public ResponseEntity<String> deleteGroup(@PathVariable("id") String id) {
-		groupRepo.deleteById(id);
-		return new ResponseEntity<String>("Group deleted", HttpStatus.OK);
 	}
 }

@@ -17,7 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -91,15 +90,4 @@ public class FriendsListControllerTests {
         .andExpect(jsonPath("friendsListOwner", Matchers.is("Ayy#1234")))
         .andExpect(jsonPath("friends", Matchers.hasSize(0)));
     }
-
-    @Test
-    void testDeleteFriendsList() throws Exception{
-        FriendsList fl = new FriendsList("Ayy#1234");
-
-        Mockito.when(friendsRepo.findById("Ayy#1234")).thenReturn(Optional.of(fl));
-
-        mvc.perform(delete("/friends/destroy/{id}", "Ayy#1234"))
-        .andExpect(status().isOk());
-    }
-
 }

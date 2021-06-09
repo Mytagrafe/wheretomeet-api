@@ -2,9 +2,9 @@ package com.wheretomeet.controller;
 
 import java.util.Optional;
 
-import com.wheretomeet.model.Group;
 import com.wheretomeet.model.User;
 import com.wheretomeet.repository.FriendsListRepository;
+import com.wheretomeet.repository.GroupsListRepository;
 import com.wheretomeet.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -32,6 +32,9 @@ public class UserControllerTests {
 
     @MockBean
     FriendsListRepository friendsRepo;
+
+    @MockBean
+    GroupsListRepository groupsListRepo;
 
     @MockBean
     UserRepository userRepo;
@@ -96,27 +99,5 @@ public class UserControllerTests {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", Matchers.is("User Ayy#1234 deleted")));
     }
-
-    @Test
-    void testGetUsersGroups() throws Exception {
-        User user = new User("Ayy", "123");
-        user.setUserId("Ayy#1234");
-
-        Group g1 = new Group("g1", "123", user);
-        Group g2 = new Group("g2", "123", user);
-        Group g3 = new Group("g3", "123", user);
-
-        user.addGroup(g1);
-        user.addGroup(g2);
-        user.addGroup(g3);
-
-        Mockito.when(userRepo.findById("Ayy#1234")).thenReturn(Optional.of(user));
-
-        mvc.perform(get("/user/{id}/groups", "Ayy#1234"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", Matchers.hasSize(3)));
-    }
-
-
 
 }
