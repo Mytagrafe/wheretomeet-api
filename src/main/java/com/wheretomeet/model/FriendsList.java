@@ -1,7 +1,6 @@
 package com.wheretomeet.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
 
 import javax.persistence.Entity;

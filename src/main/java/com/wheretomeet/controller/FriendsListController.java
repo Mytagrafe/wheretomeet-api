@@ -10,7 +10,6 @@ import com.wheretomeet.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -70,18 +69,4 @@ public class FriendsListController {
 
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
-    @DeleteMapping("/friends/destroy/{userId}")
-    public ResponseEntity<?> destroyFriendsList(@PathVariable("userId") String userId) {
-
-        FriendsList friendsList = friendsRepo.findById(userId).orElse(null);
-
-        if(friendsList != null) {
-            friendsRepo.delete(friendsList);
-            return new ResponseEntity<>(userId + "'s friends list deleted", HttpStatus.OK);
-        }
-
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
 }
