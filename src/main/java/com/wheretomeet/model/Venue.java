@@ -18,6 +18,7 @@ public class Venue implements Serializable{
     private String venuePhoneNumber;
     private String venueId;
     private HashMap<String, DistanceDuration> distanceDuration;
+    private int votes;
 
     public Venue() {
         //default constructor
@@ -86,6 +87,14 @@ public class Venue implements Serializable{
 
     public Pair<String, String> getUserDistanceDurationToVenue(String uid, TravelMethod method) {
         return this.distanceDuration.get(uid).getDistanceDuration(method);
+    }
+
+    public void setVotes(int vote) {
+        this.votes = vote;
+    }
+
+    public int getVotes() {
+        return votes;
     }
 
     @Override
