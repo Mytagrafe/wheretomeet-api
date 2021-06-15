@@ -44,6 +44,9 @@ public class User implements Serializable {
     }
 
     public void addHome(Home home) {
+        if(this.homes == null) {
+            homes = new HashSet<>();
+        }
         homes.add(home);
     }
 

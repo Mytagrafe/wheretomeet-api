@@ -3,6 +3,7 @@ package com.wheretomeet.controller;
 import java.util.Optional;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -74,25 +75,23 @@ public class UserController {
 	}
 
 	@PutMapping("/user/{id}/add/homes")
-	public ResponseEntity<?> addHome(@PathVariable("uid") String userId, @RequestBody Home home) {
-		Optional<User> user = userRepo.findById(userId);
-		if(user.isPresent()){
-			HashSet<Home> homes = user.getHomes();
-			homes.add(home);
+	public ResponseEntity<?> addHome(@PathVariable("id") String userId, @RequestBody Home home) {
+		User user = userRepo.findById(userId).orElse(null);
+		if(user != null) {
+			user.addHome(home);
 			userRepo.save(user);
-			return ResponseEntity.ok().body(user.get().getHomes());
+			return ResponseEntity.ok().body(user.getHomes());
 		}
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
-	@DeleteMapping("/user/{id}/delete/homes")
-    public ResponseEntity<?> deleteHome(@PathVariable("uid") String userId, @RequestBody Home home) {
-		Optional<User> user = userRepo.findById(userId);
-		if(user.isPresent()) {
-			HashSet<Home> homes = user.getHomes();
-			homes.remove(home);
+	@PutMapping("/user/{id}/delete/homes")
+    public ResponseEntity<?> deleteHome(@PathVariable("id") String userId, @RequestBody Home home) {
+		User user = userRepo.findById(userId).orElse(null);
+		if(user != null) {
+			user.removeHome(home);
 			userRepo.save(user);
-			return ResponseEntity.ok().body(user.get().getHomes());
+			return ResponseEntity.ok().body(user.getHomes());
 		}
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
