@@ -17,6 +17,7 @@ import com.wheretomeet.model.User;
 import com.wheretomeet.repository.FriendsListRepository;
 import com.wheretomeet.repository.GroupsListRepository;
 import com.wheretomeet.repository.UserRepository;
+import com.wheretomeet.model.Home;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -53,15 +54,48 @@ public class UserController {
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
+	@GetMapping("/user/homes/{id}")
+	public ResponseEntity<?> getUserHomeLocations(@PathVariable("id") String accountId) {
+		Optional<User> user = userRepo.findById(accountId);
+		if(user.isPresent()){
+			return ResponseEntity.ok().body(user.get().getHomes());
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+
 	@PostMapping("/users")
-	public ResponseEntity<String> createUser(@RequestBody User user) {
+	public ResponseEntity<?> createUser(@RequestBody User user) {
 		userRepo.save(user);
 		String generatedId = user.getUserId();
 		// initialize and store user's data lists
 		friendsRepo.save(new FriendsList(generatedId));
 		groupsListRepo.save(new GroupsList(generatedId));
-		return new ResponseEntity<String>("User " + generatedId + " created", HttpStatus.OK);
+		return ResponseEntity.ok().body(user);
 	}
+
+	@PutMapping("/user/{id}/add/homes")
+	public ResponseEntity<?> addHome(@PathVariable("uid") String userId, @RequestBody Home home) {
+		Optional<User> user = userRepo.findById(userId);
+		if(user.isPresent()){
+			HashSet<Home> homes = user.getHomes();
+			homes.add(home);
+			userRepo.save(user);
+			return ResponseEntity.ok().body(user.get().getHomes());
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+
+	@DeleteMapping("/user/{id}/delete/homes")
+    public ResponseEntity<?> deleteHome(@PathVariable("uid") String userId, @RequestBody Home home) {
+		Optional<User> user = userRepo.findById(userId);
+		if(user.isPresent()) {
+			HashSet<Home> homes = user.getHomes();
+			homes.remove(home);
+			userRepo.save(user);
+			return ResponseEntity.ok().body(user.get().getHomes());
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 
 	@DeleteMapping("/user/id/{id}")
 	public ResponseEntity<String> deleteUser(@PathVariable("id") String accountId) {

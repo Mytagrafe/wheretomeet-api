@@ -80,8 +80,7 @@ public class UserControllerTests {
             .contentType(MediaType.APPLICATION_JSON)
             .content(jsonUser)
             .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", Matchers.is("User Ayy#1234 created")));
+            .andExpect(status().isOk());
     }
 
     @Test
@@ -96,8 +95,17 @@ public class UserControllerTests {
             .contentType(MediaType.APPLICATION_JSON)
             .content(jsonUser)
             .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", Matchers.is("User Ayy#1234 deleted")));
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    void testGetHome() throws Exception {
+        User user = new User("abc", "1234");
+        user.setUserId("abc#1234");
+        Mockito.when(userRepo.findById("abc#1234")).thenReturn(Optional.of(user));
+
+        mvc.perform(get("/user/homes/{id}", "abc#1234"))
+            .andExpect(status().isOk());
     }
 
 }
