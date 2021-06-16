@@ -1,7 +1,9 @@
 package com.wheretomeet.model;
 
+import java.util.HashSet;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.HashMap;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -22,7 +24,8 @@ public class Group implements Serializable {
     private String groupPassword;
     @JoinColumn(name = "group_owner", referencedColumnName = "userId")
     private @OneToOne User groupOwner;
-    private ArrayList<User> groupMembers;
+    private HashSet<User> groupMembers;
+    private HashMap<String, Venue> venues;
 
     public Group() {
         //default constructor
@@ -32,7 +35,7 @@ public class Group implements Serializable {
         this.groupName = groupName;
         this.groupPassword = password;
         if(users != null){
-            this.groupMembers = new ArrayList<User>();
+            this.groupMembers = new HashSet<User>();
             for (User user : users) {
                 groupMembers.add(user);
             }
@@ -63,11 +66,11 @@ public class Group implements Serializable {
         this.groupOwner = groupOwner;
     }
 
-    public ArrayList<User> getGroupMembers() {
+    public HashSet<User> getGroupMembers() {
         return groupMembers;
     }
 
-    public void setGroupMembers(ArrayList<User> members) {
+    public void setGroupMembers(HashSet<User> members) {
         this.groupMembers = members;
     }
 
@@ -77,5 +80,23 @@ public class Group implements Serializable {
 
     public void setGroupId(String id) {
         this.groupId = id;
+    }
+
+    public HashMap<String, Venue> getGroupVenues(){
+        return venues;
+    }
+
+    public void initGroupVenues() {
+        if(this.venues == null) {
+            this.venues = new HashMap<>();
+        }
+    }
+
+    public void addGroupVenue(String venueId, Venue venue) {
+        this.venues.put(venueId, venue);
+    }
+
+    public void removeGroupVenue(String venueId) {
+        this.venues.remove(venueId);
     }
 }

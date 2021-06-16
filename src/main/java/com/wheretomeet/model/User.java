@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.HashSet;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -19,6 +20,7 @@ public class User implements Serializable {
     private String username;
     private String password;
     private String email;
+    HashSet<Home> homes;
 
     public User() {
         //default constructor
@@ -27,12 +29,29 @@ public class User implements Serializable {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+        this.homes = new HashSet<>();
     }
 
     public User(String email, String username, String password) {
         this.email = email;
         this.username = username;
         this.password = password;
+        this.homes = new HashSet<>();
+    }
+
+    public HashSet<Home> getHomes() {
+        return homes;
+    }
+
+    public void addHome(Home home) {
+        if(this.homes == null) {
+            homes = new HashSet<>();
+        }
+        homes.add(home);
+    }
+
+    public void removeHome(Home home) {
+        homes.remove(home);
     }
 
     public String getEmail() {
@@ -65,5 +84,16 @@ public class User implements Serializable {
 
     public void setUserId(String id) {
         this.userId = id;
+    }
+
+    @Override
+    public boolean equals(Object obj){
+
+        if(obj == null || getClass() != obj.getClass())
+            return false;
+
+        User other = (User) obj;
+
+        return this.userId.equals( other.getUserId() );
     }
 } 

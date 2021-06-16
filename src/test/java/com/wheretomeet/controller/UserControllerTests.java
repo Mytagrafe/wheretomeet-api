@@ -1,11 +1,10 @@
 package com.wheretomeet.controller;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import com.wheretomeet.model.User;
 import com.wheretomeet.repository.FriendsListRepository;
+import com.wheretomeet.repository.GroupsListRepository;
 import com.wheretomeet.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -35,21 +34,10 @@ public class UserControllerTests {
     FriendsListRepository friendsRepo;
 
     @MockBean
-    UserRepository userRepo;
+    GroupsListRepository groupsListRepo;
 
-    @Test
-    void testGetAllUsers() throws Exception { 
-        User user1 = new User("Ayy", "123");
-        User user2 = new User("Bee", "123");
-        User user3 = new User("Cee", "123");
-        List<User> users = Arrays.asList(user1, user2, user3);
- 
-        Mockito.when(userRepo.findAll()).thenReturn(users);
- 
-        mvc.perform(get("/users"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", Matchers.hasSize(3)));
-    }
+    @MockBean
+    UserRepository userRepo;
 
     @Test
     void testGetOneUser() throws Exception { 
@@ -92,8 +80,7 @@ public class UserControllerTests {
             .contentType(MediaType.APPLICATION_JSON)
             .content(jsonUser)
             .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", Matchers.is("User Ayy#1234 created")));
+            .andExpect(status().isOk());
     }
 
     @Test
@@ -108,7 +95,17 @@ public class UserControllerTests {
             .contentType(MediaType.APPLICATION_JSON)
             .content(jsonUser)
             .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", Matchers.is("User Ayy#1234 deleted")));
+            .andExpect(status().isOk());
     }
+
+    @Test
+    void testGetHome() throws Exception {
+        User user = new User("abc", "1234");
+        user.setUserId("abc#1234");
+        Mockito.when(userRepo.findById("abc#1234")).thenReturn(Optional.of(user));
+
+        mvc.perform(get("/user/homes/{id}", "abc#1234"))
+            .andExpect(status().isOk());
+    }
+
 }

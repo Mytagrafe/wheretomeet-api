@@ -17,7 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -52,14 +51,28 @@ public class FriendsListControllerTests {
         User bee = new User("Bee", "1234");
         bee.setUserId("Bee#1234");
         FriendsList fl = new FriendsList("Ayy#1234");
+        User cee = new User("Cee", "1234");
+        cee.setUserId("Cee#1234");
 
         Mockito.when(friendsRepo.findById("Ayy#1234")).thenReturn(Optional.of(fl));
         Mockito.when(userRepo.findById("Bee#1234")).thenReturn(Optional.of(bee));
+        Mockito.when(userRepo.findById("Cee#1234")).thenReturn(Optional.of(cee));
 
         mvc.perform(put("/friends/{userId}/add/{friendId}", "Ayy#1234", "Bee#1234"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("friendsListOwner", Matchers.is("Ayy#1234")))
         .andExpect(jsonPath("friends", Matchers.hasSize(1)));
+
+        mvc.perform(put("/friends/{userId}/add/{friendId}", "Ayy#1234", "Cee#1234"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("friendsListOwner", Matchers.is("Ayy#1234")))
+        .andExpect(jsonPath("friends", Matchers.hasSize(2)));
+
+        mvc.perform(put("/friends/{userId}/add/{friendId}", "Ayy#1234", "Bee#1234"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("friendsListOwner", Matchers.is("Ayy#1234")))
+        .andExpect(jsonPath("friends", Matchers.hasSize(2)));
+
     }
 
     @Test
@@ -77,15 +90,4 @@ public class FriendsListControllerTests {
         .andExpect(jsonPath("friendsListOwner", Matchers.is("Ayy#1234")))
         .andExpect(jsonPath("friends", Matchers.hasSize(0)));
     }
-
-    @Test
-    void testDeleteFriendsList() throws Exception{
-        FriendsList fl = new FriendsList("Ayy#1234");
-
-        Mockito.when(friendsRepo.findById("Ayy#1234")).thenReturn(Optional.of(fl));
-
-        mvc.perform(delete("/friends/destroy/{id}", "Ayy#1234"))
-        .andExpect(status().isOk());
-    }
-
 }
