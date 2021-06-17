@@ -87,13 +87,22 @@ public class User implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj){
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((userId == null) ? 0 : userId.hashCode());
+        return result;
+    }
 
-        if(obj == null || getClass() != obj.getClass())
+    @Override
+    public boolean equals(Object obj) {
+
+        if(obj == null || !(obj instanceof User)) {
             return false;
+        }
 
         User other = (User) obj;
 
-        return this.userId.equals( other.getUserId() );
+        return this.getUserId().equals(other.getUserId());
     }
 } 

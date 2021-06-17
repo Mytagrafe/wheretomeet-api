@@ -8,6 +8,7 @@ import com.wheretomeet.repository.GroupRepository;
 import com.google.gson.Gson;
 
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +32,28 @@ public class GroupControllerTests {
     @MockBean
     GroupRepository groupRepo;
 
+    private User user1;
+    private User user2;
+    private User user3;
+    private Group group;
+
+    @BeforeEach
+    void initUsersAndGroups() {
+        user1 = new User("Ayy", "123");
+        user2 = new User("Bee", "123");
+        user3 = new User("Cee", "123");
+
+        user1.setUserId("Ayy#1234");
+        user2.setUserId("Bee#1234");
+        user3.setUserId("Cee#1234");
+
+        group = new Group("g1", "123", user1, user2, user3);
+        group.setGroupOwner(user1);
+        group.setGroupId("000000001");
+    }
+
     @Test
     void testGetOneGroup() throws Exception { 
-        User user1 = new User("Ayy", "123");
-        User user2 = new User("Bee", "123");
-        User user3 = new User("Cee", "123");
-
-        Group group = new Group("g1", "123", user1, user2, user3);
-        group.setGroupId("000000001");
-
         Mockito.when(groupRepo.findById("000000001")).thenReturn(Optional.of(group));
         
         mvc.perform(get("/group/id/{id}", "000000001"))
@@ -50,14 +64,6 @@ public class GroupControllerTests {
 
     @Test
     void testCreateGroup() throws Exception {
-        User user1 = new User("Ayy", "123");
-        User user2 = new User("Bee", "123");
-        User user3 = new User("Cee", "123");
-
-        Group group = new Group("g1", "123", user1, user2, user3);
-        group.setGroupOwner(user1);
-        group.setGroupId("000000001");
-
         Gson gson = new Gson();
         String jsonGroup = gson.toJson(group);
 
@@ -72,14 +78,6 @@ public class GroupControllerTests {
 
     @Test
     void testDeleteGroup() throws Exception {
-        User user1 = new User("Ayy", "123");
-        User user2 = new User("Bee", "123");
-        User user3 = new User("Cee", "123");
-
-        Group group = new Group("g1", "123", user1, user2, user3);
-        group.setGroupId("000000001");
-        group.setGroupOwner(user1);
-
         Gson gson = new Gson();
         String jsonGroup = gson.toJson(group);
         Mockito.doNothing().when(groupRepo).deleteById("000000001");

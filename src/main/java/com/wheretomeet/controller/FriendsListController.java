@@ -60,8 +60,7 @@ public class FriendsListController {
         if(friendsList != null) {
             User friend = userRepo.findById(friendId).orElse(null);
             if(friend != null) {
-                boolean b = friendsList.removeFriend(friend);
-                log.info("{}", b);
+                friendsList.removeFriend(friend);
                 friendsRepo.save(friendsList);
                 return new ResponseEntity<>(friendsList, HttpStatus.OK);
             }

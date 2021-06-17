@@ -98,13 +98,21 @@ public class Venue implements Serializable{
     }
 
     @Override
-    public boolean equals(Object obj){
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((venueId == null) ? 0 : venueId.hashCode());
+        return result;
+    }
 
-        if(obj == null || getClass() != obj.getClass())
+    @Override
+    public boolean equals(Object obj) {
+
+        if(obj == null || !(obj instanceof Venue))
             return false;
 
         Venue other = (Venue) obj;
 
-        return this.venueId.equals( other.getVenueId() );
+        return this.getVenueId().equals(other.getVenueId());
     }
 }

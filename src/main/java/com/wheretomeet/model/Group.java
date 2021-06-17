@@ -99,4 +99,23 @@ public class Group implements Serializable {
     public void removeGroupVenue(String venueId) {
         this.venues.remove(venueId);
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((groupId == null) ? 0 : groupId.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null || !(obj instanceof Group)) {
+            return false;
+        }
+        
+        Group other = (Group)obj;
+
+        return this.getGroupId().equals(other.getGroupId());
+    }
 }

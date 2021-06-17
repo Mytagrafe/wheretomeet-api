@@ -35,8 +35,14 @@ public class FriendsListControllerTests {
     @Test
     void testGetUsersFriends() throws Exception { 
         FriendsList fl = new FriendsList("Ayy#1234");
-        fl.addFriend(new User("Bee", "1234"));
-        fl.addFriend(new User("Cee", "1234"));
+        User bee = new User("Bee", "1234");
+        User cee = new User("Cee", "1234");
+        
+        bee.setUserId("Bee#1234");
+        cee.setUserId("Cee#1234");
+
+        fl.addFriend(bee);
+        fl.addFriend(cee);
 
         Mockito.when(friendsRepo.findById("Ayy#1234")).thenReturn(Optional.of(fl));
 
