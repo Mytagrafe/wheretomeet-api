@@ -44,12 +44,14 @@ public class FriendsListController {
         if(friendsList != null) {
             User friend = userRepo.findById(friendId).orElse(null);
             if(friend != null) {
-                friendsList.addFriend(friend);
+                boolean added = friendsList.addFriend(friend);
+                if(!added) {
+                    return new ResponseEntity<>("user does not exist", HttpStatus.NOT_FOUND);
+                }
                 friendsRepo.save(friendsList);
                 return new ResponseEntity<>(friendsList, HttpStatus.OK);
             }
         }
-
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
@@ -60,12 +62,19 @@ public class FriendsListController {
         if(friendsList != null) {
             User friend = userRepo.findById(friendId).orElse(null);
             if(friend != null) {
-                friendsList.removeFriend(friend);
+                try {
+                    boolean removed = friendsList.removeFriend(friend);
+                    if(!removed) {
+                        return new ResponseEntity<>("user does not exist", HttpStatus.NOT_FOUND);
+                    }
+                }
+                catch(NullPointerException e) {
+                    log.info(e.getMessage());
+                }
                 friendsRepo.save(friendsList);
                 return new ResponseEntity<>(friendsList, HttpStatus.OK);
             }
         }
-
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

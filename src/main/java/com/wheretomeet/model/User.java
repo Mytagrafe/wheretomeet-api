@@ -43,15 +43,21 @@ public class User implements Serializable {
         return homes;
     }
 
-    public void addHome(Home home) {
+    public boolean addHome(Home home) {
         if(this.homes == null) {
             homes = new HashSet<>();
         }
-        homes.add(home);
+        if(homes.contains(home)) {
+            return true;
+        }
+        return homes.add(home);
     }
 
-    public void removeHome(Home home) {
-        homes.remove(home);
+    public boolean removeHome(Home home) {
+        if(homes == null) {
+            throw new NullPointerException("user's homes list is null");
+        }
+        return homes.remove(home);
     }
 
     public String getEmail() {
@@ -96,13 +102,10 @@ public class User implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-
         if(obj == null || !(obj instanceof User)) {
             return false;
         }
-
         User other = (User) obj;
-
         return this.getUserId().equals(other.getUserId());
     }
 } 

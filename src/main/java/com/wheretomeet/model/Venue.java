@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.javatuples.Pair;
 
-public class Venue implements Serializable{
+public class Venue implements Serializable {
     final static Logger log = LoggerFactory.getLogger(Venue.class);
 
     private float[] venueCoordinates = new float[2];
@@ -107,12 +107,10 @@ public class Venue implements Serializable{
 
     @Override
     public boolean equals(Object obj) {
-
-        if(obj == null || !(obj instanceof Venue))
+        if(obj == null || !(obj instanceof Venue)) {
             return false;
-
+        }
         Venue other = (Venue) obj;
-
         return this.getVenueId().equals(other.getVenueId());
     }
 }

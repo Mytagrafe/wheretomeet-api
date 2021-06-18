@@ -33,15 +33,38 @@ public class GroupsList implements Serializable {
         return userId;
     }
 
-    public void addGroup(Group group) {
-        groups.add(group);
+    public boolean addGroup(Group group) {
+        if(groups == null) {
+            groups = new HashSet<>();
+        }
+        return groups.add(group);
     }
 
-    public void removeGroup(Group group) {
-        groups.remove(group);
+    public boolean removeGroup(Group group) {
+        if(groups == null) {
+            throw new NullPointerException("user's group list is null");
+        }
+        return groups.remove(group);
     }
 
     public HashSet<Group> getGroups() {
         return groups;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((userId == null) ? 0 : userId.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null || !(obj instanceof GroupsList)) {
+            return false;
+        }
+        GroupsList other = (GroupsList) obj;
+        return this.getGroupsListOwner().equals(other.getGroupsListOwner());
     }
 }

@@ -70,8 +70,21 @@ public class Group implements Serializable {
         return groupMembers;
     }
 
-    public void setGroupMembers(HashSet<User> members) {
-        this.groupMembers = members;
+    public boolean addGroupMember(User user){
+        if(groupMembers == null) {
+            groupMembers = new HashSet<>();
+        }
+        if(groupMembers.contains(user)) {
+            return true;
+        }
+        return groupMembers.add(user);
+    }
+    
+    public boolean removeGroupMember(User user) {
+        if(groupMembers == null) {
+            throw new NullPointerException("Group's members list is null");
+        }
+        return groupMembers.remove(user);
     }
 
     public String getGroupId(){

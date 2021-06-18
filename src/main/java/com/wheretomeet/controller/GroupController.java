@@ -16,13 +16,18 @@ import org.slf4j.Logger;
 
 import com.wheretomeet.model.DistanceDuration;
 import com.wheretomeet.model.Group;
+import com.wheretomeet.model.User;
 import com.wheretomeet.model.Venue;
 import com.wheretomeet.repository.GroupRepository;
+import com.wheretomeet.repository.UserRepository;
 
 @RestController
 public class GroupController {
 
 	final static Logger log = LoggerFactory.getLogger(GroupController.class);
+
+	@Autowired
+	private UserRepository userRepo;
 
 	@Autowired
 	private GroupRepository groupRepo;
@@ -36,15 +41,59 @@ public class GroupController {
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
-	@PostMapping("/groups")
-	public ResponseEntity<?> createGroup(@RequestBody Group group) {
-		if(group != null) {
-			group.initGroupVenues();
+	@PostMapping("/groups/create/{uid}")
+	public ResponseEntity<?> createGroup(@PathVariable("uid") String userId, @RequestBody Group group) {
+		User owner = userRepo.findById(userId).orElse(null); 
+		if(owner != null && group != null) {
+			try {
+				group.initGroupVenues();
+				group.setGroupOwner(owner);
+				group.addGroupMember(owner);
+			}
+			catch(NullPointerException e) {
+				log.info(e.getMessage());
+			}
 			groupRepo.save(group);
 			return new ResponseEntity<Group>(group, HttpStatus.OK);
 		}
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
+
+	@PutMapping("/group/{groupId}/add/{userId}")
+	public ResponseEntity<?> addGroupMember(@PathVariable("groupId") String groupId, @PathVariable("userId") String userId) {
+		User newMember = userRepo.findById(userId).orElse(null);
+		Group group = groupRepo.findById(groupId).orElse(null);
+		if(newMember != null && group != null) {
+			boolean added = group.addGroupMember(newMember);
+			if(!added) {
+				return new ResponseEntity<>("user not found", HttpStatus.NOT_FOUND);
+			}
+			groupRepo.save(group);
+			return new ResponseEntity<Group>(group, HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+
+	@PutMapping("/group/{groupId}/remove/{userId}")
+	public ResponseEntity<?> removeGroupMember(@PathVariable("groupId") String groupId, @PathVariable("userId") String userId) {
+		User newMember = userRepo.findById(userId).orElse(null);
+		Group group = groupRepo.findById(groupId).orElse(null);
+		if(newMember != null && group != null) {
+			try {
+				boolean removed = group.removeGroupMember(newMember);
+				if(!removed) {
+					return new ResponseEntity<>("user not found", HttpStatus.NOT_FOUND); 
+				}
+			}
+			catch(NullPointerException e) {
+				log.info(e.getMessage());
+			}
+			groupRepo.save(group);
+			return new ResponseEntity<Group>(group, HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+
 
 	@DeleteMapping("/group/id/{id}")
 	public ResponseEntity<String> deleteGroup(@PathVariable("id") String id) {

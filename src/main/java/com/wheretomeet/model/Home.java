@@ -2,18 +2,16 @@ package com.wheretomeet.model;
 
 import java.io.Serializable;
 
-import com.wheretomeet.model.DistanceDuration.TravelMethod;
-
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import org.javatuples.Pair;
 
-public class Home implements Serializable{
+public class Home implements Serializable {
     final static Logger log = LoggerFactory.getLogger(Home.class);
 
     private float[] homeCoordinates = new float[2];
     private String homeName;
     private String homeAddress;
+    private String id;
 
     public Home() {
         //default constructor
@@ -52,13 +50,19 @@ public class Home implements Serializable{
     }
 
     @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
+
+    @Override
     public boolean equals(Object obj){
-
-        if(obj == null || getClass() != obj.getClass())
+        if(obj == null || getClass() != obj.getClass()) {
             return false;
-
+        }
         Home other = (Home) obj;
-
         return this.homeAddress.equals( other.getHomeAddress() );
     }
 }

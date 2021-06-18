@@ -32,12 +32,21 @@ public class FriendsList implements Serializable {
         return userId;
     }
 
-    public void addFriend(User friend) {
-        friends.add(friend);
+    public boolean addFriend(User friend) {
+        if(friends == null) {
+            friends = new HashSet<>();
+        }
+        if(friends.contains(friend)) {
+            return true;
+        }
+        return friends.add(friend);
     }
 
-    public void removeFriend(User friend) {
-        friends.remove(friend);
+    public boolean removeFriend(User friend) {
+        if(friends == null) {
+            throw new NullPointerException("user's friends list is null");
+        }
+        return friends.remove(friend);
     }
 
     public HashSet<User> getFriends() {
