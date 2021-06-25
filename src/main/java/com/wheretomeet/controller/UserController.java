@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import com.wheretomeet.model.FriendsList;
 import com.wheretomeet.model.GroupsList;
 import com.wheretomeet.model.User;
+import com.wheretomeet.model.Event;
 import com.wheretomeet.repository.FriendsListRepository;
 import com.wheretomeet.repository.GroupsListRepository;
 import com.wheretomeet.repository.UserRepository;
@@ -64,6 +65,17 @@ public class UserController {
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
+	@GetMapping("/user/events/{id}")
+	public ResponseEntity<?> getUserEvents(@PathVariable("id") String accountId) {
+		Optional<User> user = userRepo.findById(accountId);
+		if(user.isPresent()){
+			if(user.get().getEvents() != null)
+				return ResponseEntity.ok().body(user.get().getEvents());
+			else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+
 	@PostMapping("/users")
 	public ResponseEntity<?> createUser(@RequestBody User user) {
 		userRepo.save(user);
@@ -92,6 +104,17 @@ public class UserController {
 			user.removeHome(home);
 			userRepo.save(user);
 			return ResponseEntity.ok().body(user.getHomes());
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+	@PutMapping("/user/{id}/add/events")
+    public ResponseEntity<?> addEvent(@PathVariable("id") String userId, @RequestBody Event event) {
+		User user = userRepo.findById(userId).orElse(null);
+		if(user != null) {
+			user.removeEvent(event);
+			userRepo.save(user);
+			return ResponseEntity.ok().body(user.getEvents());
 		}
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

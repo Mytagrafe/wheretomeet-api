@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.HashSet;
+import java.util.ArrayList;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -20,7 +21,8 @@ public class User implements Serializable {
     private String username;
     private String password;
     private String email;
-    HashSet<Home> homes;
+    private HashSet<Home> homes;
+    private ArrayList<Event> events;
 
     public User() {
         //default constructor
@@ -30,6 +32,7 @@ public class User implements Serializable {
         this.username = username;
         this.password = password;
         this.homes = new HashSet<>();
+        this.events = new ArrayList<Event>();
     }
 
     public User(String email, String username, String password) {
@@ -37,10 +40,27 @@ public class User implements Serializable {
         this.username = username;
         this.password = password;
         this.homes = new HashSet<>();
+        this.events = new ArrayList<Event>();
     }
 
     public HashSet<Home> getHomes() {
         return homes;
+    }
+
+    public ArrayList<Event> getEvents() {
+        return events;
+    }
+
+    public boolean addEvent(Event event) {
+        if(this.events == null)
+            events = new ArrayList<>();
+        return events.add(event);
+    }
+
+    public boolean removeEvent(Event event) {
+        if(this.events == null)
+            return false;
+        return events.remove(event);
     }
 
     public boolean addHome(Home home) {

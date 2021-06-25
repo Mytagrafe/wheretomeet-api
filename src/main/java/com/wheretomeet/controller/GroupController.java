@@ -18,6 +18,7 @@ import com.wheretomeet.model.DistanceDuration;
 import com.wheretomeet.model.Group;
 import com.wheretomeet.model.User;
 import com.wheretomeet.model.Venue;
+import com.wheretomeet.model.Timeframe;
 import com.wheretomeet.repository.GroupRepository;
 import com.wheretomeet.repository.UserRepository;
 
@@ -37,6 +38,15 @@ public class GroupController {
 		Optional<Group> group = groupRepo.findById(id);
 		if(group.isPresent()) {
 			return ResponseEntity.ok().body(group.get());
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+	
+	@GetMapping("/group/{id}/timeframes")
+	public ResponseEntity<?> getTimeframes(@PathVariable("id") String id) {
+		Group group = groupRepo.findById(id).orElse(null);
+		if(group != null) {
+			return ResponseEntity.ok().body(group.getTimeframes());
 		}
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
@@ -128,6 +138,28 @@ public class GroupController {
 		if(g != null) {
 			g.removeGroupVenue(venue.getVenueId());
 			return new ResponseEntity<String>("Venue location removed successfully!",HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+
+	@PutMapping("/group/{id}/add/timeframe") 
+	public ResponseEntity<?> addTimeframeToGroup(@PathVariable("id") String id, @RequestBody Timeframe timeframe) {
+		Group g = groupRepo.findById(id).orElse(null);
+		if(g != null) {
+			g.addTimeframe(timeframe);
+			groupRepo.save(g);
+			return new ResponseEntity<String>("Timeframe added successfully",HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+
+	@PutMapping("/group/{id}/remove/timeframe") 
+	public ResponseEntity<?> removeTimeframeToGroup(@PathVariable("id") String id, @RequestBody Timeframe timeframe) {
+		Group g = groupRepo.findById(id).orElse(null);
+		if(g != null) {
+			g.removeTimeframe(timeframe);
+			groupRepo.save(g);
+			return new ResponseEntity<String>("Timeframe added successfully",HttpStatus.OK);
 		}
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}

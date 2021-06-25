@@ -3,6 +3,7 @@ package com.wheretomeet.model;
 import java.util.HashSet;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.ArrayList;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,6 +27,7 @@ public class Group implements Serializable {
     private @OneToOne User groupOwner;
     private HashSet<User> groupMembers;
     private HashMap<String, Venue> venues;
+    private ArrayList<Timeframe> freeTime;
 
     public Group() {
         //default constructor
@@ -40,6 +42,8 @@ public class Group implements Serializable {
                 groupMembers.add(user);
             }
         }
+        this.venues = new HashMap<String, Venue>();
+        this.freeTime = new ArrayList<Timeframe>();
     }
 
     public String getGroupName() {
@@ -111,6 +115,21 @@ public class Group implements Serializable {
 
     public void removeGroupVenue(String venueId) {
         this.venues.remove(venueId);
+    }
+
+    public void addTimeframe(Timeframe timeframe) {
+        if(this.freeTime == null)
+            this.freeTime = new ArrayList<Timeframe>();
+        freeTime.add(timeframe);
+    }
+
+    public ArrayList<Timeframe> getTimeframes() {
+        return this.freeTime;
+    }
+
+    public void removeTimeframe(Timeframe timeframe) {
+        if(this.freeTime != null)
+            freeTime.remove(timeframe);
     }
 
     @Override
