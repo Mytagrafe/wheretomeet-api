@@ -1,6 +1,7 @@
 package com.wheretomeet.controller;
 
 import java.util.Optional;
+import java.util.HashSet;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,6 +19,7 @@ import com.wheretomeet.model.DistanceDuration;
 import com.wheretomeet.model.Group;
 import com.wheretomeet.model.User;
 import com.wheretomeet.model.Venue;
+import com.wheretomeet.model.Event;
 import com.wheretomeet.model.Timeframe;
 import com.wheretomeet.repository.GroupRepository;
 import com.wheretomeet.repository.UserRepository;
@@ -65,6 +67,25 @@ public class GroupController {
 			}
 			groupRepo.save(group);
 			return new ResponseEntity<Group>(group, HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+
+	@PutMapping("/groups/event/{id}")
+	public ResponseEntity<?> createEvent(@PathVariable("id") String id, @RequestBody Event event) {
+		Group group = groupRepo.findById(id).orElse(null);
+		if(group != null) {
+			try {
+				HashSet<User> users = group.getGroupMembers();
+				for(User u : users) {
+					u.addEvent(event);
+					userRepo.save(u);
+				}
+			}
+			catch(NullPointerException e) {
+				log.info(e.getMessage());
+			}
+			return new ResponseEntity<Event>(event, HttpStatus.OK);
 		}
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
