@@ -12,7 +12,7 @@ import javax.persistence.Table;
 import com.wheretomeet.model.LiteUser;
 
 @Entity
-@Table(name =  "friends_list")
+@Table(name = "friends_list")
 public class FriendsList implements Serializable {
     @Id
     private String userId;
@@ -38,10 +38,7 @@ public class FriendsList implements Serializable {
         if(friends == null) {
             friends = new HashSet<>();
         }
-        if(friends.contains(friend)) {
-            return true;
-        }
-        return friends.add(friend);
+        return friend == null ? false : friends.add(friend);
     }
 
     public boolean removeFriend(LiteUser friend) {

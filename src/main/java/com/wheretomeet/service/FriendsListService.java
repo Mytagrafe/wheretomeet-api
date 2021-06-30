@@ -1,20 +1,35 @@
 package com.wheretomeet.service;
 
+import java.util.HashSet;
 import java.util.NoSuchElementException;
 
 import com.wheretomeet.entity.FriendsList;
+import com.wheretomeet.entity.User;
+import com.wheretomeet.mapper.UserMapper;
 import com.wheretomeet.model.LiteUser;
 import com.wheretomeet.repository.FriendsListRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Service
 public class FriendsListService {
     @Autowired
     FriendsListRepository friendsRepo;
 
-    public FriendsList findUserById(String id) {
-        return friendsRepo.findById(id).orElse(null);
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    UserMapper userMapper;
+
+    public FriendsList findFriendsListById(String userId) {
+        FriendsList friendsList = friendsRepo.findById(userId).orElse(null);
+        if(friendsList == null) {
+            throw new NullPointerException("cannot find find " + userId + "'s friendslist");
+        }
+        return friendsList;
     }
 
     @Transactional
@@ -27,21 +42,39 @@ public class FriendsListService {
         friendsRepo.deleteById(userId);
     }
 
-    public void addUserToUserFriendList(String userId, LiteUser liteUser) {
-        FriendsList list = findUserById(userId);
-        boolean added = list.addFriend(liteUser);
+    public HashSet<LiteUser> getUsersFriendsList(String userId) {
+        FriendsList list = findFriendsListById(userId);
+        if(list == null) {
+            throw new NullPointerException("user " + userId + "'s friendslist does not exist");
+        }
+        return list.getFriends();
+    }
+
+    public HashSet<LiteUser> addFriendToUserFriendList(String userId, String friendId) {
+        FriendsList list = findFriendsListById(userId);
+        User friend = userService.findUserById(friendId);
+        
+        boolean added = list.addFriend(userMapper.toLiteUser(friend));
+
         if(!added) {
             throw new IllegalArgumentException("friend already exists in list");
         }
+
         save(list);
+        return list.getFriends();
     }
 
-    public void removeUserToUserFriendList(String userId, LiteUser liteUser) {
-        FriendsList list = findUserById(userId);
-        boolean removed = list.removeFriend(liteUser);
+    public HashSet<LiteUser> removeFriendFromUserFriendList(String userId, String friendId) {
+        FriendsList list = findFriendsListById(userId);
+        User friend = userService.findUserById(friendId);
+
+        boolean removed = list.removeFriend(userMapper.toLiteUser(friend));
+
         if(!removed) {
             throw new NoSuchElementException("user not found in friendslist");
         }
+
         save(list);
+        return list.getFriends();
     }
 }
