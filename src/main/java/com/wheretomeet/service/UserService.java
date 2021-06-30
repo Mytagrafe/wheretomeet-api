@@ -1,6 +1,13 @@
 package com.wheretomeet.service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+
 import com.wheretomeet.entity.User;
+import com.wheretomeet.mapper.UserMapper;
+import com.wheretomeet.model.Event;
+import com.wheretomeet.model.Home;
+import com.wheretomeet.model.LiteUser;
 import com.wheretomeet.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +19,9 @@ public class UserService {
     @Autowired
     UserRepository userRepo;
 
+    @Autowired
+    UserMapper userMapper;
+
     public User findUserById(String id) {
         return userRepo.findById(id).orElse(null);
     }
@@ -21,35 +31,28 @@ public class UserService {
         userRepo.save(userEntity);
     }
 
-    // General user management stuff
-    public void createNewUser() {
-
+    @Transactional
+    public void delete(String userId) {
+        userRepo.deleteById(userId);
     }
 
-    public void getUser() {
+    // General user management stuff
+    public LiteUser createNewUser() {
+        return null;
+    }
+
+    public LiteUser getUser() {
         // should only return username, id, and email
+        return null;
     }
 
     public void deleteUser() {
 
     }
 
-    // User Groups -- Are these needed....
-    public void getUserGroups() {
-
-    }
-
-    public void addGroupToUser() {
-
-    }
-
-    public void removeGroupFromUser() {
-
-    }
-
     // User Homes:
-    public void getUserHomes() {
-
+    public HashSet<Home> getUserHomes() {
+        return null;
     }
 
     public void addUserHome() {
@@ -61,8 +64,8 @@ public class UserService {
     }
 
     // User Events:
-    public void getUserEvents() {
-
+    public ArrayList<Event> getUserEvents() {
+        return null;
     }
 
     public void addEventToUser() {
