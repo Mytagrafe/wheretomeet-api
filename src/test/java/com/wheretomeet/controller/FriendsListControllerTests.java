@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import com.wheretomeet.entity.FriendsList;
 import com.wheretomeet.entity.User;
+import com.wheretomeet.model.LiteUser;
 import com.wheretomeet.repository.FriendsListRepository;
 import com.wheretomeet.repository.UserRepository;
 
@@ -35,8 +36,8 @@ public class FriendsListControllerTests {
     @Test
     void testGetUsersFriends() throws Exception { 
         FriendsList fl = new FriendsList("Ayy#1234");
-        User bee = new User("Bee", "1234");
-        User cee = new User("Cee", "1234");
+        LiteUser bee = new LiteUser();
+        LiteUser cee = new LiteUser();
         
         bee.setUserId("Bee#1234");
         cee.setUserId("Cee#1234");
@@ -54,9 +55,11 @@ public class FriendsListControllerTests {
 
     @Test
     void testAddFriend() throws Exception {
+        FriendsList fl = new FriendsList("Ayy#1234");
+
         User bee = new User("Bee", "1234");
         bee.setUserId("Bee#1234");
-        FriendsList fl = new FriendsList("Ayy#1234");
+
         User cee = new User("Cee", "1234");
         cee.setUserId("Cee#1234");
 
@@ -83,10 +86,15 @@ public class FriendsListControllerTests {
 
     @Test
     void testRemoveFriend() throws Exception {
+        FriendsList fl = new FriendsList("Ayy#1234");
+
         User bee = new User("Bee", "1234");
         bee.setUserId("Bee#1234");
-        FriendsList fl = new FriendsList("Ayy#1234");
-        fl.addFriend(bee);
+
+        LiteUser liteBee = new LiteUser();
+        liteBee.setUserId(bee.getUserId());
+        
+        fl.addFriend(liteBee);
 
         Mockito.when(friendsRepo.findById("Ayy#1234")).thenReturn(Optional.of(fl));
         Mockito.when(userRepo.findById("Bee#1234")).thenReturn(Optional.of(bee));

@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import com.wheretomeet.entity.FriendsList;
 import com.wheretomeet.entity.User;
+import com.wheretomeet.mapper.UserMapper;
 import com.wheretomeet.repository.FriendsListRepository;
 import com.wheretomeet.repository.UserRepository;
 
@@ -43,8 +44,9 @@ public class FriendsListController {
         FriendsList friendsList = friendsRepo.findById(userId).orElse(null);
         if(friendsList != null) {
             User friend = userRepo.findById(friendId).orElse(null);
+            UserMapper userMapper = new UserMapper();
             if(friend != null) {
-                boolean added = friendsList.addFriend(friend);
+                boolean added = friendsList.addFriend(userMapper.toLiteUser(friend));
                 if(!added) {
                     return new ResponseEntity<>("user does not exist", HttpStatus.NOT_FOUND);
                 }
@@ -62,8 +64,9 @@ public class FriendsListController {
         if(friendsList != null) {
             User friend = userRepo.findById(friendId).orElse(null);
             if(friend != null) {
+                UserMapper userMapper = new UserMapper();
                 try {
-                    boolean removed = friendsList.removeFriend(friend);
+                    boolean removed = friendsList.removeFriend(userMapper.toLiteUser(friend));
                     if(!removed) {
                         return new ResponseEntity<>("user does not exist", HttpStatus.NOT_FOUND);
                     }
