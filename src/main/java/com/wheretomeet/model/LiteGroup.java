@@ -1,18 +1,15 @@
 package com.wheretomeet.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
 
 public class LiteGroup implements Serializable {
     String groupId;
     String groupName;
+    HashSet<LiteUser> members;
 
     public LiteGroup() {
         //default constructor
-    }
-
-    public LiteGroup(String groupId, String groupName) {
-        this.groupId = groupId;
-        this.groupName = groupName;
     }
 
     public String getGroupId() {
@@ -29,6 +26,14 @@ public class LiteGroup implements Serializable {
 
     public void setGroupName(String groupName) {
         this.groupName = groupName;
+    }
+
+    public HashSet<LiteUser> getMembers() {
+        return members;
+    }
+
+    public void setMembers(HashSet<LiteUser> members) {
+        this.members = members;
     }
 
     @Override

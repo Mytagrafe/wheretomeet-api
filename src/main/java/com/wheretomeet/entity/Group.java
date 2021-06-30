@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.wheretomeet.model.LiteUser;
 import com.wheretomeet.model.Timeframe;
 import com.wheretomeet.model.Venue;
 
@@ -27,15 +28,16 @@ public class Group implements Serializable {
     private String groupName;
     private String groupPassword;
     @JoinColumn(name = "group_owner", referencedColumnName = "userId")
-    private @OneToOne User groupOwner;
-    private HashSet<User> groupMembers;
+    private @OneToOne LiteUser groupOwner;
+    private HashSet<LiteUser> groupMembers;
     private HashMap<String, Venue> venues;
     private ArrayList<Timeframe> freeTime;
 
     public Group() {
         //default constructor
-        this.venues = new HashMap<String, Venue>();
-        this.freeTime = new ArrayList<Timeframe>();
+        this.groupMembers = new HashSet<>();
+        this.venues = new HashMap<>();
+        this.freeTime = new ArrayList<>();
     }
 
     public String getGroupName() {
@@ -54,29 +56,26 @@ public class Group implements Serializable {
         this.groupPassword = password;
     }
 
-    public User getGroupOwner() {
+    public LiteUser getGroupOwner() {
         return groupOwner;
     }
 
-    public void setGroupOwner(User groupOwner) {
+    public void setGroupOwner(LiteUser groupOwner) {
         this.groupOwner = groupOwner;
     }
 
-    public HashSet<User> getGroupMembers() {
+    public HashSet<LiteUser> getGroupMembers() {
         return groupMembers;
     }
 
-    public boolean addGroupMember(User user){
+    public boolean addGroupMember(LiteUser user){
         if(groupMembers == null) {
             groupMembers = new HashSet<>();
-        }
-        if(groupMembers.contains(user)) {
-            return true;
         }
         return groupMembers.add(user);
     }
     
-    public boolean removeGroupMember(User user) {
+    public boolean removeGroupMember(LiteUser user) {
         if(groupMembers == null) {
             throw new NullPointerException("Group's members list is null");
         }

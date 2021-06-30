@@ -31,12 +31,12 @@ public class GroupListService {
         GroupsList list = findUserById(userId);
         boolean added = list.addGroup(liteGroup);
         if(!added) {
-            throw new IllegalArgumentException("group already exists in list");
+            throw new IllegalArgumentException("group already exists in grouplist");
         }
         save(list);
     }
 
-    public void removeGroupToUserGroupList(String userId, LiteGroup liteGroup) {
+    public void removeGroupFromUserGroupList(String userId, LiteGroup liteGroup) {
         GroupsList list = findUserById(userId);
         boolean removed = list.removeGroup(liteGroup);
         if(!removed) {
