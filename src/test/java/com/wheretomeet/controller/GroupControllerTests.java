@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import com.wheretomeet.entity.Group;
 import com.wheretomeet.entity.User;
+import com.wheretomeet.mapper.UserMapper;
 import com.wheretomeet.repository.GroupRepository;
 import com.wheretomeet.repository.UserRepository;
 import com.google.gson.Gson;
@@ -31,6 +32,9 @@ public class GroupControllerTests {
     @Autowired
     private MockMvc mvc;
 
+    @Autowired
+    private UserMapper userMapper;
+
     @MockBean
     GroupRepository groupRepo;
 
@@ -54,10 +58,10 @@ public class GroupControllerTests {
 
         group = new Group();
         group.setGroupName("g1");
-        group.addGroupMember(user1);
-        group.addGroupMember(user2);
-        group.addGroupMember(user3);
-        group.setGroupOwner(user1);
+        group.addGroupMember(userMapper.toLiteUser(user1));
+        group.addGroupMember(userMapper.toLiteUser(user2));
+        group.addGroupMember(userMapper.toLiteUser(user3));
+        group.setGroupOwner(userMapper.toLiteUser(user1));
         group.setGroupId("000000001");
     }
 

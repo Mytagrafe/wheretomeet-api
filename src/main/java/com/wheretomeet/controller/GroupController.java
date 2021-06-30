@@ -16,7 +16,9 @@ import org.slf4j.Logger;
 
 import com.wheretomeet.entity.Group;
 import com.wheretomeet.entity.User;
+import com.wheretomeet.mapper.UserMapper;
 import com.wheretomeet.model.DistanceDuration;
+import com.wheretomeet.model.LiteUser;
 import com.wheretomeet.model.Venue;
 import com.wheretomeet.model.Timeframe;
 import com.wheretomeet.repository.GroupRepository;
@@ -55,10 +57,12 @@ public class GroupController {
 	public ResponseEntity<?> createGroup(@PathVariable("uid") String userId, @RequestBody Group group) {
 		User owner = userRepo.findById(userId).orElse(null); 
 		if(owner != null && group != null) {
+			UserMapper userMapper = new UserMapper();
+			LiteUser liteUser = userMapper.toLiteUser(owner);
 			try {
 				group.initGroupVenues();
-				group.setGroupOwner(owner);
-				group.addGroupMember(owner);
+				group.setGroupOwner(liteUser);
+				group.addGroupMember(liteUser);
 			}
 			catch(NullPointerException e) {
 				log.info(e.getMessage());
@@ -74,7 +78,9 @@ public class GroupController {
 		User newMember = userRepo.findById(userId).orElse(null);
 		Group group = groupRepo.findById(groupId).orElse(null);
 		if(newMember != null && group != null) {
-			boolean added = group.addGroupMember(newMember);
+			UserMapper userMapper = new UserMapper();
+			LiteUser liteUser = userMapper.toLiteUser(newMember);
+			boolean added = group.addGroupMember(liteUser);
 			if(!added) {
 				return new ResponseEntity<>("user not found", HttpStatus.NOT_FOUND);
 			}
@@ -89,8 +95,10 @@ public class GroupController {
 		User newMember = userRepo.findById(userId).orElse(null);
 		Group group = groupRepo.findById(groupId).orElse(null);
 		if(newMember != null && group != null) {
+			UserMapper userMapper = new UserMapper();
+			LiteUser liteUser = userMapper.toLiteUser(newMember);
 			try {
-				boolean removed = group.removeGroupMember(newMember);
+				boolean removed = group.removeGroupMember(liteUser);
 				if(!removed) {
 					return new ResponseEntity<>("user not found", HttpStatus.NOT_FOUND); 
 				}
