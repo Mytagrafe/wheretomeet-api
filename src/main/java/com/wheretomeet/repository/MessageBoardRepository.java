@@ -2,7 +2,7 @@ package com.wheretomeet.repository;
 
 import org.springframework.stereotype.Repository;
 
-import com.wheretomeet.model.MessageBoard;
+import com.wheretomeet.entity.MessageBoard;
 
 import org.springframework.data.repository.CrudRepository;
 

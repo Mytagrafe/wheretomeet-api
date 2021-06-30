@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-import com.wheretomeet.model.User;
+import com.wheretomeet.entity.User;
 
 @Repository
 public interface UserRepository extends CrudRepository<User, String> {

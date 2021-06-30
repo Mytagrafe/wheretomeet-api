@@ -1,4 +1,4 @@
-package com.wheretomeet.model;
+package com.wheretomeet.entity;
 
 import java.util.HashSet;
 import java.io.Serializable;
@@ -11,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.wheretomeet.model.Timeframe;
+import com.wheretomeet.model.Venue;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -31,17 +34,6 @@ public class Group implements Serializable {
 
     public Group() {
         //default constructor
-    }
-
-    public Group(String groupName, String password, User...users) {
-        this.groupName = groupName;
-        this.groupPassword = password;
-        if(users != null){
-            this.groupMembers = new HashSet<User>();
-            for (User user : users) {
-                groupMembers.add(user);
-            }
-        }
         this.venues = new HashMap<String, Venue>();
         this.freeTime = new ArrayList<Timeframe>();
     }

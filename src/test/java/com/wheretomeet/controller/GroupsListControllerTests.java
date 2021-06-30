@@ -2,8 +2,9 @@ package com.wheretomeet.controller;
 
 import java.util.Optional;
 
-import com.wheretomeet.model.Group;
-import com.wheretomeet.model.GroupsList;
+import com.wheretomeet.entity.Group;
+import com.wheretomeet.entity.GroupsList;
+import com.wheretomeet.model.LiteGroup;
 import com.wheretomeet.repository.GroupRepository;
 import com.wheretomeet.repository.GroupsListRepository;
 
@@ -36,9 +37,14 @@ public class GroupsListControllerTests {
     void testGetUsersGroups() throws Exception { 
 
         GroupsList groupList = new GroupsList("Ayy#1234");
+
         Group group = new Group();
         group.setGroupId("123456789");
-        groupList.addGroup(group);
+
+        LiteGroup liteGroup = new LiteGroup();
+        liteGroup.setGroupId(group.getGroupId());
+
+        groupList.addGroup(liteGroup);
 
 
         Mockito.when(groupsListRepo.findById("Ayy#1234")).thenReturn(Optional.of(groupList));
@@ -66,9 +72,14 @@ public class GroupsListControllerTests {
     @Test
     void testRemoveGroup() throws Exception {
         GroupsList groupList = new GroupsList("Ayy#1234");
+
         Group group = new Group();
         group.setGroupId("123456789");
-        groupList.addGroup(group);
+
+        LiteGroup liteGroup = new LiteGroup();
+        liteGroup.setGroupId(group.getGroupId());
+
+        groupList.addGroup(liteGroup);
 
         Mockito.when(groupsListRepo.findById("Ayy#1234")).thenReturn(Optional.of(groupList));
         Mockito.when(groupRepo.findById("123456789")).thenReturn(Optional.of(group));

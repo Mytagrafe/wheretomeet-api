@@ -9,8 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.slf4j.LoggerFactory;
-import com.wheretomeet.model.Group;
-import com.wheretomeet.model.GroupsList;
+
+import com.wheretomeet.entity.Group;
+import com.wheretomeet.entity.GroupsList;
+import com.wheretomeet.mapper.GroupMapper;
 import com.wheretomeet.repository.GroupRepository;
 import com.wheretomeet.repository.GroupsListRepository;
 
@@ -45,7 +47,8 @@ public class GroupsListController {
         if(groupsList != null) {
             Group group = groupRepo.findById(groupId).orElse(null);
             if(group != null) {
-                groupsList.addGroup(group);
+                GroupMapper gMapper = new GroupMapper();
+                groupsList.addGroup(gMapper.toLiteGroup(group));
                 groupsListRepo.save(groupsList);
                 return new ResponseEntity<>(groupsList, HttpStatus.OK);
             }
@@ -61,7 +64,8 @@ public class GroupsListController {
         if(groupsList != null) {
             Group group = groupRepo.findById(groupId).orElse(null);
             if(group != null) {
-                groupsList.removeGroup(group);
+                GroupMapper gMapper = new GroupMapper();
+                groupsList.removeGroup(gMapper.toLiteGroup(group));
                 groupsListRepo.save(groupsList);
                 return new ResponseEntity<>(groupsList, HttpStatus.OK);
             }

@@ -2,8 +2,8 @@ package com.wheretomeet.controller;
 
 import java.util.Optional;
 
-import com.wheretomeet.model.Group;
-import com.wheretomeet.model.User;
+import com.wheretomeet.entity.Group;
+import com.wheretomeet.entity.User;
 import com.wheretomeet.repository.GroupRepository;
 import com.wheretomeet.repository.UserRepository;
 import com.google.gson.Gson;
@@ -52,7 +52,11 @@ public class GroupControllerTests {
         user2.setUserId("Bee#1234");
         user3.setUserId("Cee#1234");
 
-        group = new Group("g1", "123", user1, user2, user3);
+        group = new Group();
+        group.setGroupName("g1");
+        group.addGroupMember(user1);
+        group.addGroupMember(user2);
+        group.addGroupMember(user3);
         group.setGroupOwner(user1);
         group.setGroupId("000000001");
     }

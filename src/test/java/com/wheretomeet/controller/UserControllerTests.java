@@ -2,7 +2,7 @@ package com.wheretomeet.controller;
 
 import java.util.Optional;
 
-import com.wheretomeet.model.User;
+import com.wheretomeet.entity.User;
 import com.wheretomeet.repository.FriendsListRepository;
 import com.wheretomeet.repository.GroupsListRepository;
 import com.wheretomeet.repository.UserRepository;

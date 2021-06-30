@@ -3,8 +3,8 @@ package com.wheretomeet.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.wheretomeet.entity.MessageBoard;
 import com.wheretomeet.model.Message;
-import com.wheretomeet.model.MessageBoard;
 import com.wheretomeet.repository.MessageBoardRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,8 +2,8 @@ package com.wheretomeet.controller;
 
 import java.util.Optional;
 
+import com.wheretomeet.entity.MessageBoard;
 import com.wheretomeet.model.Message;
-import com.wheretomeet.model.MessageBoard;
 import com.wheretomeet.repository.MessageBoardRepository;
 import com.google.gson.Gson;
 

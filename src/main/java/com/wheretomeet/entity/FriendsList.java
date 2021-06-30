@@ -1,4 +1,4 @@
-package com.wheretomeet.model;
+package com.wheretomeet.entity;
 
 import java.io.Serializable;
 import java.util.HashSet;

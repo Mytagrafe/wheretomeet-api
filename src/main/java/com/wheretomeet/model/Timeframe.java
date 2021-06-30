@@ -1,13 +1,11 @@
 package com.wheretomeet.model;
 import java.io.Serializable;
-import java.util.Date;
-import javax.persistence.Id;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 public class Timeframe implements Serializable {
     final static Logger log = LoggerFactory.getLogger(Timeframe.class);
-    private @Id String userId;
+    private String userId;
     private long startTime;
     private long endTime;
 

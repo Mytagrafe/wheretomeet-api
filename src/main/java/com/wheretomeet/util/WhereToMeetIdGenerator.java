@@ -3,8 +3,8 @@ package com.wheretomeet.util;
 import java.io.Serializable;
 import java.util.Random;
 
-import com.wheretomeet.model.Group;
-import com.wheretomeet.model.User;
+import com.wheretomeet.entity.Group;
+import com.wheretomeet.entity.User;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;

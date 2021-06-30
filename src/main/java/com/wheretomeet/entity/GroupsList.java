@@ -1,4 +1,4 @@
-package com.wheretomeet.model;
+package com.wheretomeet.entity;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -9,13 +9,15 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
+import com.wheretomeet.model.LiteGroup;
+
 
 @Entity
-@Table(name =  "groups_list")
+@Table(name = "groups_list")
 public class GroupsList implements Serializable {
     @Id
     private String userId;
-    private HashSet<Group> groups;
+    private HashSet<LiteGroup> groups;
     @OneToOne
     @PrimaryKeyJoinColumn(name = "userId", referencedColumnName = "userId")
     private User user;
@@ -33,21 +35,21 @@ public class GroupsList implements Serializable {
         return userId;
     }
 
-    public boolean addGroup(Group group) {
+    public boolean addGroup(LiteGroup group) {
         if(groups == null) {
             groups = new HashSet<>();
         }
         return groups.add(group);
     }
 
-    public boolean removeGroup(Group group) {
+    public boolean removeGroup(LiteGroup group) {
         if(groups == null) {
             throw new NullPointerException("user's group list is null");
         }
         return groups.remove(group);
     }
 
-    public HashSet<Group> getGroups() {
+    public HashSet<LiteGroup> getGroups() {
         return groups;
     }
 

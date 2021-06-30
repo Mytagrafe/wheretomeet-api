@@ -1,4 +1,4 @@
-package com.wheretomeet.model;
+package com.wheretomeet.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+
+import com.wheretomeet.model.Message;
 
 @Entity
 @Table(name = "message_boards")

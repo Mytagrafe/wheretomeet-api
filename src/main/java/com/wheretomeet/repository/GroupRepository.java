@@ -1,8 +1,9 @@
 package com.wheretomeet.repository;
 
+import com.wheretomeet.entity.Group;
+
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import com.wheretomeet.model.Group;
 
 @Repository
 public interface GroupRepository extends CrudRepository<Group, String> {

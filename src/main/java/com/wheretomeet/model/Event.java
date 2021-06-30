@@ -1,13 +1,8 @@
 package com.wheretomeet.model;
 import java.io.Serializable;
-import java.util.Date;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-import org.javatuples.Pair;
 
 public class Event implements Serializable {
-    final static Logger log = LoggerFactory.getLogger(Event.class);
     private String groupName;
     private long startTime;
     private long endTime;

@@ -12,9 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.wheretomeet.model.FriendsList;
-import com.wheretomeet.model.GroupsList;
-import com.wheretomeet.model.User;
+import com.wheretomeet.entity.User;
+import com.wheretomeet.entity.FriendsList;
+import com.wheretomeet.entity.GroupsList;
 import com.wheretomeet.model.Event;
 import com.wheretomeet.repository.FriendsListRepository;
 import com.wheretomeet.repository.GroupsListRepository;

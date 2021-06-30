@@ -1,6 +1,6 @@
 package com.wheretomeet.repository;
 
-import com.wheretomeet.model.FriendsList;
+import com.wheretomeet.entity.FriendsList;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

@@ -14,9 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
+import com.wheretomeet.entity.Group;
+import com.wheretomeet.entity.User;
 import com.wheretomeet.model.DistanceDuration;
-import com.wheretomeet.model.Group;
-import com.wheretomeet.model.User;
 import com.wheretomeet.model.Venue;
 import com.wheretomeet.model.Timeframe;
 import com.wheretomeet.repository.GroupRepository;
