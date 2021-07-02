@@ -17,12 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserService {
     @Autowired
-    UserRepository userRepo;
+    private UserRepository userRepo;
 
-    @Autowired
-    UserMapper userMapper;
+    private  UserMapper userMapper = new UserMapper();
 
-    public User findUserById(String id) {
+    protected User findUserById(String id) {
         return userRepo.findById(id).orElse(null);
     }
 
@@ -46,8 +45,8 @@ public class UserService {
         return null;
     }
 
-    public void deleteUser() {
-
+    public LiteUser deleteUser() {
+        return null;
     }
 
     // User Homes:
@@ -55,12 +54,12 @@ public class UserService {
         return null;
     }
 
-    public void addUserHome() {
-
+    public HashSet<Home> addUserHome() {
+        return null;
     }
 
-    public void removeUserHome() {
-
+    public HashSet<Home> removeUserHome() {
+        return null;
     }
 
     // User Events:
@@ -68,12 +67,12 @@ public class UserService {
         return null;
     }
 
-    public void addEventToUser() {
-    
+    public ArrayList<Event> addEventToUser() {
+        return null; 
     }
 
-    public void removeEventFromUser() {
-
+    public ArrayList<Event> removeEventFromUser() {
+        return null;
     }
     
 }

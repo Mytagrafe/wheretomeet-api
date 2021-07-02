@@ -23,7 +23,7 @@ public class GroupListService {
 
     private GroupMapper groupMapper = new GroupMapper();
 
-    public GroupsList findGroupListById(String id) {
+    protected GroupsList findGroupListById(String id) {
         GroupsList groupsList = groupsListRepo.findById(id).orElse(null);
         if(groupsList == null) {
             throw new NullPointerException("cannot find find " + id + "'s groupslist");

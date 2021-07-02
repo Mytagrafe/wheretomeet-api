@@ -23,7 +23,7 @@ public class FriendsListService {
 
     private UserMapper userMapper = new UserMapper();
 
-    public FriendsList findFriendsListById(String userId) {
+    protected FriendsList findFriendsListById(String userId) {
         FriendsList friendsList = friendsRepo.findById(userId).orElse(null);
         if(friendsList == null) {
             throw new NullPointerException("cannot find find " + userId + "'s friendslist");
