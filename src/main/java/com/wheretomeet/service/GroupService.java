@@ -20,22 +20,28 @@ import org.springframework.stereotype.Service;
 @Service
 public class GroupService {
     @Autowired
-    GroupRepository groupRepo;
+    private GroupRepository groupRepo;
 
     @Autowired 
-    UserService userService;
+    private UserService userService;
 
     @Autowired
-    GroupListService groupsListService;
+    private GroupListService groupsListService;
 
-    @Autowired
-    UserMapper userMapper;
+    private UserMapper userMapper = new UserMapper();
 
-    @Autowired
-    GroupMapper groupMapper;
+    private GroupMapper groupMapper = new GroupMapper();
+
+    protected Group findGroupById(String id) {
+        return groupRepo.findById(id).orElse(null);
+    }
 
     // General group management stuff
-    public void createGroup(String creatorId, String groupName, String password) {
+    public LiteGroup getGroupById(String groupId) {
+        return groupMapper.toLiteGroup(groupRepo.findById(groupId).orElse(null));
+    }
+
+    public LiteGroup createGroup(String creatorId, String groupName, String password) {
         
         User owner = userService.findUserById(creatorId);
 
@@ -49,25 +55,20 @@ public class GroupService {
         group.setGroupName(groupName);
         group.setGroupPassword(password);
         group.addGroupMember(liteUser);
-
-        LiteGroup liteGroup = groupMapper.toLiteGroup(group);
-
-        groupsListService.addGroupToUserGroupList(creatorId, liteGroup);
         groupRepo.save(group);
+
+        groupsListService.addGroupToUserGroupList(creatorId, group.getGroupId());
+
+        return groupMapper.toLiteGroup(group);
     }
 
     public void deleteGroup(String groupId) {
         groupRepo.deleteById(groupId);
     }
 
-    public Group getGroupById(String groupId) {
-        return groupRepo.findById(groupId).orElse(null);
-    }
-
-
     // Group Membership
     public LiteUser addUserToGroup(String groupId, String newMemberId) {
-        Group group = getGroupById(groupId);
+        Group group = findGroupById(groupId);
         User newMember = userService.findUserById(newMemberId);
         
         if(newMember == null) {
@@ -75,27 +76,26 @@ public class GroupService {
         }
 
         LiteUser liteUser = userMapper.toLiteUser(newMember);
-        LiteGroup liteGroup = groupMapper.toLiteGroup(group);
 
         boolean added = group.addGroupMember(liteUser);
         if(!added) {
             throw new IllegalArgumentException("User is already a member of the group");
         }
-        groupsListService.addGroupToUserGroupList(newMemberId, liteGroup);
+
         groupRepo.save(group);
+        groupsListService.addGroupToUserGroupList(newMemberId, group.getGroupId());
 
         return liteUser;
     }   
 
-    public void removeUserFromGroup(String groupId, String memberId) {
-        Group group = getGroupById(groupId);
+    public LiteUser removeUserFromGroup(String groupId, String memberId) {
+        Group group = findGroupById(groupId);
         User toRemove = userService.findUserById(memberId);
 
         if(toRemove == null) {
             throw new NullPointerException("Cannot find user with id:" + memberId);
         }
 
-        LiteGroup liteGroup = groupMapper.toLiteGroup(group);
         LiteUser liteUser = userMapper.toLiteUser(toRemove);
 
         boolean removed = group.removeGroupMember(liteUser);
@@ -104,32 +104,33 @@ public class GroupService {
             throw new NoSuchElementException("Cannot find user " + memberId + " to remove from group");
         }   
 
-        groupsListService.removeGroupFromUserGroupList(memberId, liteGroup);
         groupRepo.save(group);
+        groupsListService.removeGroupFromUserGroupList(memberId, group.getGroupId());
+
+        return liteUser;
     }
 
     //Group Venues stuff:
     public HashMap<String, Venue> getGroupVenues(String groupId) {
-        Group group = getGroupById(groupId);
+        Group group = findGroupById(groupId);
         return group.getGroupVenues();
     }
 
     public HashMap<String, Venue> addVenueToGroup(String groupId, Venue venue) {
-        Group group = getGroupById(groupId);
+        Group group = findGroupById(groupId);
 
         if(group == null) {
             throw new NullPointerException("group with id " + groupId + " does not exist");
         }
 
-        group.addGroupVenue(venue.getVenueId(), venue);
+        group.addGroupVenue(venue);
         groupRepo.save(group);
 
         return group.getGroupVenues();
     }
 
     public HashMap<String, Venue> removeVenueFromGroup(String groupId, String venueId) {
-        Group group = getGroupById(groupId);
-
+        Group group = findGroupById(groupId);
         if(group == null) {
             throw new NullPointerException("group with id " + groupId + " does not exist");
         }
@@ -142,7 +143,7 @@ public class GroupService {
 
     // Group Timeframe stuff
     public ArrayList<Timeframe> getGroupTimeframes(String groupId) {
-        Group group = getGroupById(groupId);
+        Group group = findGroupById(groupId);
 
         if(group == null) {
             throw new NullPointerException("group with id " + groupId + " does not exist");
@@ -152,7 +153,7 @@ public class GroupService {
     }
 
     public ArrayList<Timeframe> addTimeframeToGroup(String groupId, Timeframe timeframe) {
-        Group group = getGroupById(groupId);
+        Group group = findGroupById(groupId);
 
         if(group == null) {
             throw new NullPointerException("group with id " + groupId + " does not exist");
@@ -160,12 +161,12 @@ public class GroupService {
 
         group.addTimeframe(timeframe);
         groupRepo.save(group);
-        
+
         return group.getTimeframes();
     }
 
-    public ArrayList<Timeframe> removeTimeframeToGroup(String groupId, Timeframe timeframe) {
-        Group group = getGroupById(groupId);
+    public ArrayList<Timeframe> removeTimeframeFromGroup(String groupId, Timeframe timeframe) {
+        Group group = findGroupById(groupId);
 
         if(group == null) {
             throw new NullPointerException("group with id " + groupId + " does not exist");
@@ -176,6 +177,4 @@ public class GroupService {
 
         return group.getTimeframes();
     }
-
-
 }

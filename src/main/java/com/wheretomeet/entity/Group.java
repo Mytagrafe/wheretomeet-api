@@ -94,28 +94,29 @@ public class Group implements Serializable {
         return venues;
     }
 
+    @Deprecated
     public void initGroupVenues() {
         if(this.venues == null) {
             this.venues = new HashMap<>();
         }
     }
 
-    public void addGroupVenue(String venueId, Venue venue) {
-        this.venues.put(venueId, venue);
+    public void addGroupVenue(Venue venue) {
+        this.venues.put(venue.getVenueId(), venue);
     }
 
     public void removeGroupVenue(String venueId) {
         this.venues.remove(venueId);
     }
 
+    public ArrayList<Timeframe> getTimeframes() {
+        return this.freeTime;
+    }
+
     public void addTimeframe(Timeframe timeframe) {
         if(this.freeTime == null)
             this.freeTime = new ArrayList<Timeframe>();
         freeTime.add(timeframe);
-    }
-
-    public ArrayList<Timeframe> getTimeframes() {
-        return this.freeTime;
     }
 
     public void removeTimeframe(Timeframe timeframe) {

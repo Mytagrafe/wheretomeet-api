@@ -5,12 +5,9 @@ import java.util.HashMap;
 
 import com.wheretomeet.model.DistanceDuration.TravelMethod;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 import org.javatuples.Pair;
 
 public class Venue implements Serializable {
-    final static Logger log = LoggerFactory.getLogger(Venue.class);
 
     private float[] venueCoordinates = new float[2];
     private String venueName;
@@ -22,6 +19,7 @@ public class Venue implements Serializable {
 
     public Venue() {
         //default constructor
+        this.distanceDuration = new HashMap<>();
     }
 
     public Venue(float lat, float lng, String name, String address, String phoneNumber, String venueId) {
@@ -75,6 +73,7 @@ public class Venue implements Serializable {
         this.venueId = venueId;
     }
 
+    @Deprecated
     public void initUserDistanceDuration() {
         if(this.distanceDuration == null) {
             this.distanceDuration = new HashMap<>();

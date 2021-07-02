@@ -133,7 +133,7 @@ public class GroupController {
 		Group g = groupRepo.findById(id).orElse(null);
 		if(g != null && g.getGroupVenues() != null) {
 			venue.initUserDistanceDuration();
-			g.addGroupVenue(venue.getVenueId(), venue);
+			g.addGroupVenue(venue);
 			groupRepo.save(g);
 			return new ResponseEntity<String>("Venue location added successfully!", HttpStatus.OK);
 		}
