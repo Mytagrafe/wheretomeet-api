@@ -16,13 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class FriendsListService {
     @Autowired
-    FriendsListRepository friendsRepo;
+    private FriendsListRepository friendsRepo;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
-    @Autowired
-    UserMapper userMapper;
+    private UserMapper userMapper = new UserMapper();
 
     public FriendsList findFriendsListById(String userId) {
         FriendsList friendsList = friendsRepo.findById(userId).orElse(null);
@@ -53,7 +52,7 @@ public class FriendsListService {
     public HashSet<LiteUser> addFriendToUserFriendList(String userId, String friendId) {
         FriendsList list = findFriendsListById(userId);
         User friend = userService.findUserById(friendId);
-        
+
         boolean added = list.addFriend(userMapper.toLiteUser(friend));
 
         if(!added) {

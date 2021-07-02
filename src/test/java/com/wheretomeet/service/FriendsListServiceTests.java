@@ -9,7 +9,6 @@ import java.util.Optional;
 
 import com.wheretomeet.entity.FriendsList;
 import com.wheretomeet.entity.User;
-import com.wheretomeet.mapper.UserMapper;
 import com.wheretomeet.model.LiteUser;
 import com.wheretomeet.repository.FriendsListRepository;
 
@@ -31,9 +30,6 @@ public class FriendsListServiceTests {
 
     @Mock
     UserService userService;
-
-    @Mock
-    UserMapper userMapper;
 
     private FriendsList list = new FriendsList("Ayy#1234");
     private AutoCloseable closeable;
@@ -75,7 +71,6 @@ public class FriendsListServiceTests {
         
         Mockito.when(friendsRepo.findById("Ayy#1234")).thenReturn(Optional.of(list));
         Mockito.when(userService.findUserById("Bee#1234")).thenReturn(friend);
-        Mockito.when(userMapper.toLiteUser(friend)).thenReturn(liteFriend);
 
         HashSet<LiteUser> fl = friendsListService.addFriendToUserFriendList("Ayy#1234", "Bee#1234");
         assertEquals(1, fl.size());
@@ -97,15 +92,13 @@ public class FriendsListServiceTests {
 
         LiteUser liteFriend = new LiteUser();
         liteFriend.setUserId(friend.getUserId());
-        liteFriend.setUserId(friend.getUsername());
+        liteFriend.setUsername(friend.getUsername());
 
         list.addFriend(liteFriend);
 
         Mockito.when(friendsRepo.findById("Ayy#1234")).thenReturn(Optional.of(list));
         Mockito.when(userService.findUserById("Bee#1234")).thenReturn(friend);
-        Mockito.when(userMapper.toLiteUser(friend)).thenReturn(liteFriend);
-
-
+    
         HashSet<LiteUser> fl = friendsListService.removeFriendFromUserFriendList("Ayy#1234", "Bee#1234");
         assertEquals(0, fl.size());
     }

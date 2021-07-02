@@ -6,6 +6,10 @@ import com.wheretomeet.model.LiteUser;
 public class UserMapper {
     
     public LiteUser toLiteUser(User u) {
+        if(u == null) {
+            return null;
+        }
+        
         LiteUser liteUser = new LiteUser();
 
         liteUser.setUsername(u.getUsername());
