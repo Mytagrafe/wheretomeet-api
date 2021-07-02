@@ -1,20 +1,34 @@
 package com.wheretomeet.service;
 
+import java.util.HashSet;
 import java.util.NoSuchElementException;
 
+import com.wheretomeet.entity.Group;
 import com.wheretomeet.entity.GroupsList;
+import com.wheretomeet.mapper.GroupMapper;
 import com.wheretomeet.model.LiteGroup;
 import com.wheretomeet.repository.GroupsListRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Service
 public class GroupListService {
     @Autowired
-    GroupsListRepository groupsListRepo;
+    private GroupsListRepository groupsListRepo;
 
-    public GroupsList findUserById(String id) {
-        return groupsListRepo.findById(id).orElse(null);
+    @Autowired
+    private GroupService groupService;
+
+    private GroupMapper groupMapper = new GroupMapper();
+
+    public GroupsList findGroupListById(String id) {
+        GroupsList groupsList = groupsListRepo.findById(id).orElse(null);
+        if(groupsList == null) {
+            throw new NullPointerException("cannot find find " + id + "'s groupslist");
+        }
+        return groupsList;
     }
 
     @Transactional
@@ -27,21 +41,36 @@ public class GroupListService {
         groupsListRepo.deleteById(userId);
     }
 
-    public void addGroupToUserGroupList(String userId, LiteGroup liteGroup) {
-        GroupsList list = findUserById(userId);
-        boolean added = list.addGroup(liteGroup);
+    public HashSet<LiteGroup> getUsersGroupsList(String userId) {
+        GroupsList list = findGroupListById(userId);
+        if(list == null) {
+            throw new NullPointerException("user " + userId + "'s friendslist does not exist");
+        }
+        return list.getGroups();
+    }
+
+    public HashSet<LiteGroup> addGroupToUserGroupList(String userId, String groupId) {
+        GroupsList list = findGroupListById(userId);
+        Group group = groupService.findGroupById(groupId);
+
+        boolean added = list.addGroup(groupMapper.toLiteGroup(group));
         if(!added) {
             throw new IllegalArgumentException("group already exists in grouplist");
         }
         save(list);
+        return list.getGroups();
     }
 
-    public void removeGroupFromUserGroupList(String userId, LiteGroup liteGroup) {
-        GroupsList list = findUserById(userId);
-        boolean removed = list.removeGroup(liteGroup);
+    public HashSet<LiteGroup> removeGroupFromUserGroupList(String userId, String groupId) {
+        GroupsList list = findGroupListById(userId);
+        Group group = groupService.findGroupById(groupId);
+
+        boolean removed = list.removeGroup(groupMapper.toLiteGroup(group));
         if(!removed) {
             throw new NoSuchElementException("group not found in groupslist");
         }
+
         save(list);
+        return list.getGroups();
     }
 }

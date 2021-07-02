@@ -39,7 +39,7 @@ public class GroupsList implements Serializable {
         if(groups == null) {
             groups = new HashSet<>();
         }
-        return groups.add(group);
+        return group == null ? false: groups.add(group);
     }
 
     public boolean removeGroup(LiteGroup group) {

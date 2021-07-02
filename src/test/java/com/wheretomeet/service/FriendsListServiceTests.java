@@ -1,5 +1,6 @@
 package com.wheretomeet.service;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -49,6 +50,7 @@ public class FriendsListServiceTests {
         Mockito.when(friendsRepo.findById("Ayy#1234")).thenReturn(Optional.of(list));
         HashSet<LiteUser> fl = friendsListService.getUsersFriendsList("Ayy#1234");
 
+        assertNotNull(fl);
         assertEquals(0, fl.size());
     }
 
