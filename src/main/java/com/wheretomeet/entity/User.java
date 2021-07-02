@@ -25,11 +25,15 @@ public class User implements Serializable {
     private String username;
     private String password;
     private String email;
+    private String displayName;
+    private String avatarUrl;
     private HashSet<Home> homes;
     private ArrayList<Event> events;
 
     public User() {
         //default constructor
+        this.homes = new HashSet<>();
+        this.events = new ArrayList<Event>();
     }
 
     public User(String username, String password) {
@@ -47,49 +51,12 @@ public class User implements Serializable {
         this.events = new ArrayList<Event>();
     }
 
-    public HashSet<Home> getHomes() {
-        return homes;
+    public String getUserId() {
+        return userId;
     }
 
-    public ArrayList<Event> getEvents() {
-        return events;
-    }
-
-    public boolean addEvent(Event event) {
-        if(this.events == null)
-            events = new ArrayList<>();
-        return events.add(event);
-    }
-
-    public boolean removeEvent(Event event) {
-        if(this.events == null)
-            return false;
-        return events.remove(event);
-    }
-
-    public boolean addHome(Home home) {
-        if(this.homes == null) {
-            homes = new HashSet<>();
-        }
-        if(homes.contains(home)) {
-            return true;
-        }
-        return homes.add(home);
-    }
-
-    public boolean removeHome(Home home) {
-        if(homes == null) {
-            throw new NullPointerException("user's homes list is null");
-        }
-        return homes.remove(home);
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUserId(String id) {
+        this.userId = id;
     }
 
     public String getUsername() {
@@ -108,12 +75,66 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUserId(String id) {
-        this.userId = id;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String url) {
+        this.avatarUrl = url;
+    }
+
+    public ArrayList<Event> getEvents() {
+        return events;
+    }
+
+    public boolean addEvent(Event event) {
+        if(this.events == null)
+            events = new ArrayList<>();
+        return events.add(event);
+    }
+
+    public boolean removeEvent(Event event) {
+        if(this.events == null) {
+            return false;
+        }
+        return events.remove(event);
+    }
+
+    public HashSet<Home> getHomes() {
+        return homes;
+    }
+
+    public boolean addHome(Home home) {
+        if(this.homes == null) {
+            homes = new HashSet<>();
+        }
+        if(homes.contains(home)) {
+            return false;
+        }
+        return homes.add(home);
+    }
+
+    public boolean removeHome(Home home) {
+        if(homes == null) {
+            throw new NullPointerException("user's homes list is null");
+        }
+        return homes.remove(home);
     }
 
     @Override

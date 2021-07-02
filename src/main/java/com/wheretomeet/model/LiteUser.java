@@ -1,11 +1,21 @@
 package com.wheretomeet.model;
 
 public class LiteUser {
-    String username;
-    String userId;
+    private String userId;
+    private String username;
+    private String displayName;
+    private String avatarUrl;
     
     public LiteUser() {
-        //defauly constructor
+        //default constructor
+    }
+    
+    public String getUserId() {
+        return userId;
+    }
+    
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getUsername() {
@@ -16,12 +26,20 @@ public class LiteUser {
         this.username = username;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String url) {
+        this.avatarUrl = url;
     }
 
     @Override
