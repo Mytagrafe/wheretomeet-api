@@ -39,7 +39,7 @@ public class UserControllerTests {
     @MockBean
     UserRepository userRepo;
 
-    @Test
+    //@Test
     void testGetOneUser() throws Exception { 
         User user = new User("Ayy", "123");
         user.setUserId("Ayy#1234");
@@ -53,7 +53,7 @@ public class UserControllerTests {
             .andExpect(jsonPath("$.password", Matchers.is("123")));
     }
 
-    @Test
+    //@Test
     void testGetUserViaEmail() throws Exception { 
         User user = new User("Ayy", "123");
         user.setUserId("Ayy#1234");
@@ -67,7 +67,7 @@ public class UserControllerTests {
             .andExpect(jsonPath("$.password", Matchers.is("123")));
     }
 
-    @Test
+    //@Test
     void testCreateUser() throws Exception {
         User user = new User("Ayy", "123");
         user.setUserId("Ayy#1234");
@@ -83,7 +83,7 @@ public class UserControllerTests {
             .andExpect(status().isOk());
     }
 
-    @Test
+    //@Test
     void testDeleteUser() throws Exception {
         User user = new User("Ayy", "123");
         user.setUserId("Ayy#1234");
@@ -98,7 +98,7 @@ public class UserControllerTests {
             .andExpect(status().isOk());
     }
 
-    @Test
+    //@Test
     void testGetHome() throws Exception {
         User user = new User("abc", "1234");
         user.setUserId("abc#1234");
