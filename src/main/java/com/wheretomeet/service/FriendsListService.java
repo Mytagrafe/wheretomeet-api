@@ -60,6 +60,7 @@ public class FriendsListService {
         }
 
         save(list);
+        System.out.println(list.getFriends());
         return list.getFriends();
     }
 

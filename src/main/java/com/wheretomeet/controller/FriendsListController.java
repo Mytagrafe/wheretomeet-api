@@ -1,12 +1,6 @@
 package com.wheretomeet.controller;
 
-import java.util.Optional;
-
-import com.wheretomeet.entity.FriendsList;
-import com.wheretomeet.entity.User;
-import com.wheretomeet.mapper.UserMapper;
-import com.wheretomeet.repository.FriendsListRepository;
-import com.wheretomeet.repository.UserRepository;
+import com.wheretomeet.service.FriendsListService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,59 +19,20 @@ public class FriendsListController {
     final static Logger log = LoggerFactory.getLogger(FriendsListController.class);
 
     @Autowired
-    FriendsListRepository friendsRepo;
-
-    @Autowired
-    UserRepository userRepo;
+    FriendsListService friendsListService;
 
     @GetMapping("/friends/{userId}")
 	public ResponseEntity<?> getUsersFriendsList(@PathVariable("userId") String userId) {
-		Optional<FriendsList> friendsList = friendsRepo.findById(userId);
-		if(friendsList.isPresent()) {
-			return ResponseEntity.ok().body(friendsList.get());
-		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(friendsListService.getUsersFriendsList(userId), HttpStatus.OK);
     }
     
     @PutMapping("/friends/{userId}/add/{friendId}")
     public ResponseEntity<?> addFriendToList(@PathVariable("userId") String userId, @PathVariable("friendId") String friendId) {
-        FriendsList friendsList = friendsRepo.findById(userId).orElse(null);
-        if(friendsList != null) {
-            User friend = userRepo.findById(friendId).orElse(null);
-            UserMapper userMapper = new UserMapper();
-            if(friend != null) {
-                boolean added = friendsList.addFriend(userMapper.toLiteUser(friend));
-                if(!added) {
-                    return new ResponseEntity<>("user does not exist", HttpStatus.NOT_FOUND);
-                }
-                friendsRepo.save(friendsList);
-                return new ResponseEntity<>(friendsList, HttpStatus.OK);
-            }
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(friendsListService.addFriendToUserFriendList(userId, friendId), HttpStatus.OK);
     }
 
     @PutMapping("/friends/{userId}/remove/{friendId}")
     public ResponseEntity<?> removeFriendFromList(@PathVariable("userId") String userId, @PathVariable("friendId") String friendId) {
-        FriendsList friendsList = friendsRepo.findById(userId).orElse(null);
-
-        if(friendsList != null) {
-            User friend = userRepo.findById(friendId).orElse(null);
-            if(friend != null) {
-                UserMapper userMapper = new UserMapper();
-                try {
-                    boolean removed = friendsList.removeFriend(userMapper.toLiteUser(friend));
-                    if(!removed) {
-                        return new ResponseEntity<>("user does not exist", HttpStatus.NOT_FOUND);
-                    }
-                }
-                catch(NullPointerException e) {
-                    log.info(e.getMessage());
-                }
-                friendsRepo.save(friendsList);
-                return new ResponseEntity<>(friendsList, HttpStatus.OK);
-            }
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(friendsListService.removeFriendFromUserFriendList(userId, friendId), HttpStatus.OK);
     }
 }

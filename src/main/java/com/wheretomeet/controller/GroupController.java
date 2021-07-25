@@ -1,6 +1,5 @@
 package com.wheretomeet.controller;
 
-import java.util.Optional;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -15,14 +14,10 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 import com.wheretomeet.entity.Group;
-import com.wheretomeet.entity.User;
-import com.wheretomeet.mapper.UserMapper;
 import com.wheretomeet.model.DistanceDuration;
-import com.wheretomeet.model.LiteUser;
 import com.wheretomeet.model.Venue;
 import com.wheretomeet.model.Timeframe;
-import com.wheretomeet.repository.GroupRepository;
-import com.wheretomeet.repository.UserRepository;
+import com.wheretomeet.service.GroupService;
 
 @RestController
 public class GroupController {
@@ -30,162 +25,68 @@ public class GroupController {
 	final static Logger log = LoggerFactory.getLogger(GroupController.class);
 
 	@Autowired
-	private UserRepository userRepo;
-
-	@Autowired
-	private GroupRepository groupRepo;
+	private GroupService groupService;
 
 	@GetMapping("/group/id/{id}")
 	public ResponseEntity<?> getGroupDetails(@PathVariable("id") String id) {
-		Optional<Group> group = groupRepo.findById(id);
-		if(group.isPresent()) {
-			return ResponseEntity.ok().body(group.get());
-		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(groupService.getGroupById(id), HttpStatus.OK);
 	}
 	
 	@GetMapping("/group/{id}/timeframes")
 	public ResponseEntity<?> getTimeframes(@PathVariable("id") String id) {
-		Group group = groupRepo.findById(id).orElse(null);
-		if(group != null) {
-			return ResponseEntity.ok().body(group.getTimeframes());
-		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(groupService.getGroupTimeframes(id), HttpStatus.OK);
 	}
 
 	@PostMapping("/groups/create/{uid}")
 	public ResponseEntity<?> createGroup(@PathVariable("uid") String userId, @RequestBody Group group) {
-		User owner = userRepo.findById(userId).orElse(null); 
-		if(owner != null && group != null) {
-			UserMapper userMapper = new UserMapper();
-			LiteUser liteUser = userMapper.toLiteUser(owner);
-			try {
-				group.initGroupVenues();
-				group.setGroupOwner(liteUser);
-				group.addGroupMember(liteUser);
-			}
-			catch(NullPointerException e) {
-				log.info(e.getMessage());
-			}
-			groupRepo.save(group);
-			return new ResponseEntity<Group>(group, HttpStatus.OK);
-		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		String groupName = group.getGroupName();
+		String pass = group.getGroupPassword();
+		return new ResponseEntity<>(groupService.createGroup(userId, groupName, pass), HttpStatus.OK);
 	}
 
 	@PutMapping("/group/{groupId}/add/{userId}")
 	public ResponseEntity<?> addGroupMember(@PathVariable("groupId") String groupId, @PathVariable("userId") String userId) {
-		User newMember = userRepo.findById(userId).orElse(null);
-		Group group = groupRepo.findById(groupId).orElse(null);
-		if(newMember != null && group != null) {
-			UserMapper userMapper = new UserMapper();
-			LiteUser liteUser = userMapper.toLiteUser(newMember);
-			boolean added = group.addGroupMember(liteUser);
-			if(!added) {
-				return new ResponseEntity<>("user not found", HttpStatus.NOT_FOUND);
-			}
-			groupRepo.save(group);
-			return new ResponseEntity<Group>(group, HttpStatus.OK);
-		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(groupService.addUserToGroup(groupId, userId), HttpStatus.OK);
 	}
 
 	@PutMapping("/group/{groupId}/remove/{userId}")
 	public ResponseEntity<?> removeGroupMember(@PathVariable("groupId") String groupId, @PathVariable("userId") String userId) {
-		User newMember = userRepo.findById(userId).orElse(null);
-		Group group = groupRepo.findById(groupId).orElse(null);
-		if(newMember != null && group != null) {
-			UserMapper userMapper = new UserMapper();
-			LiteUser liteUser = userMapper.toLiteUser(newMember);
-			try {
-				boolean removed = group.removeGroupMember(liteUser);
-				if(!removed) {
-					return new ResponseEntity<>("user not found", HttpStatus.NOT_FOUND); 
-				}
-			}
-			catch(NullPointerException e) {
-				log.info(e.getMessage());
-			}
-			groupRepo.save(group);
-			return new ResponseEntity<Group>(group, HttpStatus.OK);
-		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(groupService.removeUserFromGroup(groupId, userId), HttpStatus.OK);
 	}
 
-
 	@DeleteMapping("/group/id/{id}")
-	public ResponseEntity<String> deleteGroup(@PathVariable("id") String id) {
-		groupRepo.deleteById(id);
-		return new ResponseEntity<String>("Group deleted", HttpStatus.OK);
+	public ResponseEntity<?> deleteGroup(@PathVariable("id") String id) {
+		groupService.deleteGroup(id);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@GetMapping("/group/{id}/locations")
 	public ResponseEntity<?> getGroupVenues(@PathVariable("id") String id) {
-		Group g = groupRepo.findById(id).orElse(null);
-		if(g != null) {
-			return ResponseEntity.ok().body(g.getGroupVenues());
-		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(groupService.getGroupVenues(id), HttpStatus.OK);
 	}
 
 	@PutMapping("/group/{id}/add/location") 
 	public ResponseEntity<?> addVenueToGroup(@PathVariable("id") String id, @RequestBody Venue venue) {
-		Group g = groupRepo.findById(id).orElse(null);
-		if(g != null && g.getGroupVenues() != null) {
-			venue.initUserDistanceDuration();
-			g.addGroupVenue(venue);
-			groupRepo.save(g);
-			return new ResponseEntity<String>("Venue location added successfully!", HttpStatus.OK);
-		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(groupService.addVenueToGroup(id, venue), HttpStatus.OK);
 	}
 
 	@PutMapping("/group/{id}/remove/location") 
-	public ResponseEntity<?> removeVenueFromGroup(@PathVariable("id") String id, @RequestBody Venue venue) {
-		Group g = groupRepo.findById(id).orElse(null);
-		if(g != null) {
-			g.removeGroupVenue(venue.getVenueId());
-			return new ResponseEntity<String>("Venue location removed successfully!",HttpStatus.OK);
-		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	public ResponseEntity<?> removeVenueFromGroup(@PathVariable("id") String id, @PathVariable("venueId") String venueId) {
+		return new ResponseEntity<>(groupService.removeVenueFromGroup(id, venueId), HttpStatus.OK);
 	}
 
 	@PutMapping("/group/{id}/add/timeframe") 
 	public ResponseEntity<?> addTimeframeToGroup(@PathVariable("id") String id, @RequestBody Timeframe timeframe) {
-		Group g = groupRepo.findById(id).orElse(null);
-		if(g != null) {
-			g.addTimeframe(timeframe);
-			groupRepo.save(g);
-			return new ResponseEntity<String>("Timeframe added successfully",HttpStatus.OK);
-		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(groupService.addTimeframeToGroup(id, timeframe), HttpStatus.OK);
 	}
 
 	@PutMapping("/group/{id}/remove/timeframe") 
 	public ResponseEntity<?> removeTimeframeToGroup(@PathVariable("id") String id, @RequestBody Timeframe timeframe) {
-		Group g = groupRepo.findById(id).orElse(null);
-		if(g != null) {
-			g.removeTimeframe(timeframe);
-			groupRepo.save(g);
-			return new ResponseEntity<String>("Timeframe added successfully",HttpStatus.OK);
-		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(groupService.removeTimeframeFromGroup(id, timeframe), HttpStatus.OK);
 	}
 
 	@PutMapping("group/{id}/distanceDuration/{userId}")
 	public ResponseEntity<?> addUserDistanceDurationToVenue(@PathVariable("id") String groupId, @RequestBody DistanceDuration distanceDuration) {
-
-		Group g = groupRepo.findById(groupId).orElse(null);
-
-		if(g != null) {
-			String venueId = distanceDuration.getPlaceId();
-			Venue venue = g.getGroupVenues().get(venueId);
-			if(venue != null) {
-				venue.storeUserDistanceDurationToVenue(distanceDuration.getUserId(), distanceDuration);
-				return ResponseEntity.ok().body("added user's distance to place");
-			}
-		}
-
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

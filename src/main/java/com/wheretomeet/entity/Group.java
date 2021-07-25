@@ -27,8 +27,8 @@ public class Group implements Serializable {
     private @Id String groupId; 
     private String groupName;
     private String groupPassword;
-    @JoinColumn(name = "group_owner", referencedColumnName = "userId")
-    private @OneToOne LiteUser groupOwner;
+    @OneToOne @JoinColumn(name = "group_owner", referencedColumnName = "userId")
+    private User groupOwner;
     private HashSet<LiteUser> groupMembers;
     private HashMap<String, Venue> venues;
     private ArrayList<Timeframe> freeTime;
@@ -56,11 +56,11 @@ public class Group implements Serializable {
         this.groupPassword = password;
     }
 
-    public LiteUser getGroupOwner() {
+    public User getGroupOwner() {
         return groupOwner;
     }
 
-    public void setGroupOwner(LiteUser groupOwner) {
+    public void setGroupOwner(User groupOwner) {
         this.groupOwner = groupOwner;
     }
 

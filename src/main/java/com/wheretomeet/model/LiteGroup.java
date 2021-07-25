@@ -3,10 +3,14 @@ package com.wheretomeet.model;
 import java.io.Serializable;
 import java.util.HashSet;
 
+import com.wheretomeet.entity.User;
+import com.wheretomeet.mapper.UserMapper;
+
 public class LiteGroup implements Serializable {
-    String groupId;
-    String groupName;
-    HashSet<LiteUser> members;
+    private String groupId;
+    private String groupName;
+    private HashSet<LiteUser> members;
+    private LiteUser groupOwner;
 
     public LiteGroup() {
         //default constructor
@@ -28,6 +32,14 @@ public class LiteGroup implements Serializable {
         this.groupName = groupName;
     }
 
+    public LiteUser getGroupOwner() {
+        return groupOwner;
+    }
+    
+    public void setGroupOwner(LiteUser groupOwner) {
+        this.groupOwner = groupOwner;
+    }
+    
     public HashSet<LiteUser> getMembers() {
         return members;
     }
@@ -54,4 +66,6 @@ public class LiteGroup implements Serializable {
 
         return this.getGroupId().equals(other.getGroupId());
     }
+
+
 }

@@ -55,6 +55,7 @@ public class GroupService {
         group.setGroupName(groupName);
         group.setGroupPassword(password);
         group.addGroupMember(liteUser);
+        group.setGroupOwner(owner);
         groupRepo.save(group);
 
         groupsListService.addGroupToUserGroupList(creatorId, group.getGroupId());

@@ -1,6 +1,8 @@
 package com.wheretomeet.model;
 
-public class LiteUser {
+import java.io.Serializable;
+
+public class LiteUser implements Serializable {
     private String userId;
     private String username;
     private String displayName;
